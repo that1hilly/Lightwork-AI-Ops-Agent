@@ -649,7 +649,7 @@ async function sendToSlack() {
   };
  
   try {
-    await fetch(SLACK_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+   await fetch('/api/summarise', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({type:'slack',...payload}) });
     showToast('✓ Sent to Slack', 'ok');
   } catch(e) {
     showToast('Failed to send to Slack', 'err');
