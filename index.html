@@ -347,17 +347,22 @@ function renderRAG() {
   // RED: missed + active blockers
   const redIds = new Set();
   const red = allData.filter(r => {
-    const isRed = r.status==='Missed' || (r.blockers&&r.blockers.trim()!=='');
+    if (r.status==='Complete') return false;
+    const overdue = (()=>{ const d=dDiff(r.deadline); return d!==null&&d<0; })();
+    const isRed = r.status==='Missed' || overdue || (r.blockers&&r.blockers.trim()!=='');
     if (isRed) redIds.add(r.task);
     return isRed;
   });
+  const amberIds = new Set();
   const amber = allData.filter(r => {
-    if (redIds.has(r.task)) return false;
+    if (redIds.has(r.task)||r.status==='Complete') return false;
     const stale = dSince(r.lastUpdate);
-    return r.status==='At Risk' || (stale!==null&&stale>=14&&r.status!=='Complete');
+    const isAmber = r.status==='At Risk' || (stale!==null&&stale>=14);
+    if (isAmber) amberIds.add(r.task);
+    return isAmber;
   });
   const green = allData.filter(r => {
-    if (redIds.has(r.task)) return false;
+    if (redIds.has(r.task)||amberIds.has(r.task)||r.status==='Complete') return false;
     const d = dDiff(r.deadline);
     return r.status==='On Track' && d!==null && d>=0 && d<=30;
   });
