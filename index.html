@@ -15,6 +15,7 @@
     --green: #2D6A4F; --green-bg: #D8F3DC; --green-border: #A8D5B5;
     --amber: #7B5E00; --amber-bg: #FFF3CD; --amber-border: #E8C84A;
     --red: #8B2020; --red-bg: #FFE5E5; --red-border: #F0A0A0;
+    --orange: #8B4000; --orange-bg: #FFF0E0; --orange-border: #E8A060;
     --blue: #1A4A7A; --blue-bg: #E8F0FB;
     --eng: #1A4A7A; --eng-bg: #E8F0FB;
     --prod: #2D6A4F; --prod-bg: #D8F3DC;
@@ -25,54 +26,64 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
 
+  /* HEADER */
   .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   .header-left { display: flex; align-items: center; gap: 12px; }
   .logo { font-size: 15px; font-weight: 500; letter-spacing: -0.02em; }
   .logo span { color: var(--text-2); font-weight: 300; }
   .header-divider { width: 1px; height: 18px; background: var(--border); }
   .header-tag { font-size: 12px; color: var(--text-2); font-family: 'DM Mono', monospace; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
   .sync-badge { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
   .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .refresh-btn { font-size: 11px; font-family: 'DM Mono', monospace; padding: 5px 12px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
+  .refresh-btn:hover { border-color: var(--border-strong); color: var(--text); background: var(--bg); }
 
+  /* LAYOUT */
   .main { max-width: 1200px; margin: 0 auto; padding: 32px 32px 64px; }
   .page-title { font-size: 13px; font-family: 'DM Mono', monospace; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; }
 
-  /* METRICS */
+  /* METRICS TILES */
   .metrics-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
   .metric { background: var(--surface); padding: 20px 20px 18px; }
-  .metric-label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-3); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; }
+  .metric-label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-3); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; line-height: 1.3; }
   .metric-value { font-size: 32px; font-weight: 300; letter-spacing: -0.03em; line-height: 1; }
-  .metric-value.risk { color: var(--amber); }
-  .metric-value.danger { color: var(--red); }
-  .metric-value.good { color: var(--green); }
+  .v-green { color: var(--green); }
+  .v-amber { color: var(--amber); }
+  .v-red { color: var(--red); }
+  .v-orange { color: var(--orange); }
 
-  /* RAG GRID */
-  .rag-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  /* RAG PANELS */
+  .rag-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
   .rag-panel { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); }
   .rag-header { padding: 12px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid; }
-  .rag-header.red { background: var(--red-bg); border-color: var(--red-border); }
-  .rag-header.amber { background: var(--amber-bg); border-color: var(--amber-border); }
-  .rag-header.green { background: var(--green-bg); border-color: var(--green-border); }
+  .rag-header.overdue { background: var(--red-bg); border-color: var(--red-border); }
+  .rag-header.critical { background: var(--orange-bg); border-color: var(--orange-border); }
+  .rag-header.atrisk { background: var(--amber-bg); border-color: var(--amber-border); }
+  .rag-header.ontrack { background: var(--green-bg); border-color: var(--green-border); }
   .rag-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .rag-dot.red { background: var(--red); }
-  .rag-dot.amber { background: #D4900A; }
-  .rag-dot.green { background: var(--green); }
+  .rag-dot.overdue { background: var(--red); }
+  .rag-dot.critical { background: var(--orange); }
+  .rag-dot.atrisk { background: #D4900A; }
+  .rag-dot.ontrack { background: var(--green); }
   .rag-title { font-size: 12px; font-weight: 500; font-family: 'DM Mono', monospace; }
-  .rag-title.red { color: var(--red); }
-  .rag-title.amber { color: var(--amber); }
-  .rag-title.green { color: var(--green); }
+  .rag-title.overdue { color: var(--red); }
+  .rag-title.critical { color: var(--orange); }
+  .rag-title.atrisk { color: var(--amber); }
+  .rag-title.ontrack { color: var(--green); }
   .rag-count { font-size: 11px; font-family: 'DM Mono', monospace; margin-left: auto; }
-  .rag-count.red { color: var(--red); }
-  .rag-count.amber { color: var(--amber); }
-  .rag-count.green { color: var(--green); }
+  .rag-count.overdue { color: var(--red); }
+  .rag-count.critical { color: var(--orange); }
+  .rag-count.atrisk { color: var(--amber); }
+  .rag-count.ontrack { color: var(--green); }
   .rag-body { background: var(--surface); }
   .rag-item { padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
   .rag-item:last-child { border-bottom: none; }
-  .rag-item-title { color: var(--text); line-height: 1.4; font-weight: 400; }
+  .rag-item-title { color: var(--text); line-height: 1.4; }
   .rag-item-sub { font-size: 11px; color: var(--text-2); margin-top: 2px; font-family: 'DM Mono', monospace; }
   .rag-item-nextstep { font-size: 11px; color: var(--blue); margin-top: 3px; }
-  .rag-item-blocker { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--red); background: var(--red-bg); padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 3px; }
+  .rag-item-blocker { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--orange); background: var(--orange-bg); padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 3px; border: 1px solid var(--orange-border); }
   .rag-empty { padding: 16px; font-size: 12px; color: var(--text-3); font-family: 'DM Mono', monospace; text-align: center; }
 
   /* UPDATES FEED */
@@ -81,8 +92,7 @@
   .updates-title { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
   .update-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
   .update-item:last-child { border-bottom: none; }
-  .update-time { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text-3); white-space: nowrap; margin-top: 2px; min-width: 60px; }
-  .update-fn { font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 500; padding: 2px 6px; border-radius: 3px; white-space: nowrap; margin-top: 1px; flex-shrink: 0; }
+  .update-time { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text-3); white-space: nowrap; margin-top: 2px; min-width: 64px; }
   .update-body { flex: 1; }
   .update-task { color: var(--text); font-weight: 400; line-height: 1.4; }
   .update-note { font-size: 12px; color: var(--text-2); margin-top: 2px; }
@@ -112,12 +122,12 @@
   .task-name { font-weight: 400; color: var(--text); line-height: 1.4; }
   .task-notes { font-size: 12px; color: var(--text-2); margin-top: 3px; line-height: 1.4; }
   .task-nextsteps { font-size: 12px; color: var(--blue); margin-top: 3px; line-height: 1.4; }
-  .task-blocker { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--red); background: var(--red-bg); padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 3px; }
-  .stale-tag { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--red); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+  .task-blocker { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--orange); background: var(--orange-bg); border: 1px solid var(--orange-border); padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 3px; }
   .status-pill { font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 500; padding: 3px 8px; border-radius: 4px; white-space: nowrap; display: inline-block; }
-  .s-on { background: var(--green-bg); color: var(--green); }
-  .s-risk { background: var(--amber-bg); color: var(--amber); }
-  .s-missed { background: var(--red-bg); color: var(--red); }
+  .s-ontrack { background: var(--green-bg); color: var(--green); }
+  .s-atrisk { background: var(--amber-bg); color: var(--amber); }
+  .s-overdue { background: var(--red-bg); color: var(--red); }
+  .s-critical { background: var(--orange-bg); color: var(--orange); }
   .s-complete { background: var(--blue-bg); color: var(--blue); }
   .dl-normal { color: var(--text-2); font-size: 12px; font-family: 'DM Mono', monospace; }
   .dl-soon { color: var(--amber); font-size: 12px; font-family: 'DM Mono', monospace; font-weight: 500; }
@@ -132,7 +142,7 @@
   .type-btn.active { background: var(--text); color: white; border-color: var(--text); }
   .summary-text { font-size: 13px; color: var(--text-2); line-height: 1.8; white-space: pre-wrap; margin-bottom: 16px; font-family: 'DM Mono', monospace; min-height: 48px; }
   .btn-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .btn { font-size: 13px; font-family: 'DM Sans', sans-serif; padding: 9px 18px; border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 7px; transition: all 0.15s; font-weight: 400; }
+  .btn { font-size: 13px; font-family: 'DM Sans', sans-serif; padding: 9px 18px; border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 7px; transition: all 0.15s; }
   .btn:hover { background: var(--bg); }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-primary { background: var(--text); color: white; border-color: var(--text); }
@@ -144,11 +154,9 @@
   .toast.show { display: flex; }
   .toast.ok { border-color: var(--green); color: var(--green); background: var(--green-bg); }
   .toast.err { border-color: var(--red); color: var(--red); background: var(--red-bg); }
-  .refresh-btn { font-size: 11px; font-family: 'DM Mono', monospace; padding: 5px 12px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
-  .refresh-btn:hover { border-color: var(--border-strong); color: var(--text); }
   @keyframes spin { to { transform: rotate(360deg); } }
   .spinning { animation: spin 0.8s linear infinite; display: inline-block; }
-  @media (max-width: 900px) { .rag-grid { grid-template-columns: 1fr; } .metrics-grid { grid-template-columns: repeat(3, 1fr); } .main { padding: 20px 16px 48px; } .header { padding: 0 16px; } }
+  @media (max-width: 900px) { .rag-grid { grid-template-columns: 1fr 1fr; } .metrics-grid { grid-template-columns: repeat(3,1fr); } .main { padding: 20px 16px 48px; } .header { padding: 0 16px; } }
 </style>
 </head>
 <body>
@@ -159,57 +167,64 @@
     <div class="header-divider"></div>
     <div class="header-tag">ops-agent v2</div>
   </div>
-  <div class="sync-badge">
-    <div class="sync-dot"></div>
-    <span id="sync-label">loading...</span>
+  <div class="header-right">
+    <div class="sync-badge">
+      <div class="sync-dot"></div>
+      <span id="sync-label">loading...</span>
+    </div>
+    <button class="refresh-btn" onclick="loadSheet()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Refresh
+    </button>
   </div>
 </header>
 
 <main class="main">
   <div class="page-title">Team performance + deadline tracker</div>
 
+  <!-- TILES: total + 4 RAG categories + stale -->
   <div class="metrics-grid">
     <div class="metric"><div class="metric-label">Total</div><div class="metric-value" id="m-total">—</div></div>
-    <div class="metric"><div class="metric-label">On track (30d)</div><div class="metric-value good" id="m-on">—</div></div>
-    <div class="metric"><div class="metric-label">At risk</div><div class="metric-value risk" id="m-risk">—</div></div>
-    <div class="metric"><div class="metric-label">Overdue</div><div class="metric-value danger" id="m-overdue">—</div></div>
-    <div class="metric"><div class="metric-label">Blockers</div><div class="metric-value danger" id="m-blockers">—</div></div>
-    <div class="metric"><div class="metric-label">Stale 7d+</div><div class="metric-value risk" id="m-stale">—</div></div>
+    <div class="metric"><div class="metric-label">Overdue</div><div class="metric-value v-red" id="m-overdue">—</div></div>
+    <div class="metric"><div class="metric-label">Critical</div><div class="metric-value v-orange" id="m-critical">—</div></div>
+    <div class="metric"><div class="metric-label">At risk</div><div class="metric-value v-amber" id="m-atrisk">—</div></div>
+    <div class="metric"><div class="metric-label">On track</div><div class="metric-value v-green" id="m-ontrack">—</div></div>
+    <div class="metric"><div class="metric-label">Stale (no recent updates)</div><div class="metric-value v-amber" id="m-stale">—</div></div>
   </div>
 
-  <!-- RAG STATUS -->
-  <div class="rag-grid" id="rag-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+  <!-- RAG: 4 columns -->
+  <div class="rag-grid">
     <div class="rag-panel">
-      <div class="rag-header red">
-        <div class="rag-dot red"></div>
-        <span class="rag-title red">Overdue</span>
-        <span class="rag-count red" id="rag-overdue-count">0</span>
+      <div class="rag-header overdue">
+        <div class="rag-dot overdue"></div>
+        <span class="rag-title overdue">Overdue</span>
+        <span class="rag-count overdue" id="rag-overdue-count">0</span>
       </div>
       <div class="rag-body" id="rag-overdue"></div>
     </div>
     <div class="rag-panel">
-      <div class="rag-header red" style="background:#FFF0E0;border-color:#E8A060;">
-        <div class="rag-dot" style="background:#C05000;"></div>
-        <span class="rag-title" style="color:#C05000;">Critical</span>
-        <span class="rag-count" style="color:#C05000;" id="rag-red-count">0</span>
+      <div class="rag-header critical">
+        <div class="rag-dot critical"></div>
+        <span class="rag-title critical">Critical</span>
+        <span class="rag-count critical" id="rag-critical-count">0</span>
       </div>
-      <div class="rag-body" id="rag-red"></div>
+      <div class="rag-body" id="rag-critical"></div>
     </div>
     <div class="rag-panel">
-      <div class="rag-header amber">
-        <div class="rag-dot amber"></div>
-        <span class="rag-title amber">At risk</span>
-        <span class="rag-count amber" id="rag-amber-count">0</span>
+      <div class="rag-header atrisk">
+        <div class="rag-dot atrisk"></div>
+        <span class="rag-title atrisk">At risk</span>
+        <span class="rag-count atrisk" id="rag-atrisk-count">0</span>
       </div>
-      <div class="rag-body" id="rag-amber"></div>
+      <div class="rag-body" id="rag-atrisk"></div>
     </div>
     <div class="rag-panel">
-      <div class="rag-header green">
-        <div class="rag-dot green"></div>
-        <span class="rag-title green">On track</span>
-        <span class="rag-count green" id="rag-green-count">0</span>
+      <div class="rag-header ontrack">
+        <div class="rag-dot ontrack"></div>
+        <span class="rag-title ontrack">On track</span>
+        <span class="rag-count ontrack" id="rag-ontrack-count">0</span>
       </div>
-      <div class="rag-body" id="rag-green"></div>
+      <div class="rag-body" id="rag-ontrack"></div>
     </div>
   </div>
 
@@ -220,10 +235,6 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Recent updates
       </div>
-      <button class="refresh-btn" onclick="loadSheet()">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-        Refresh
-      </button>
     </div>
     <div id="updates-body"></div>
   </div>
@@ -238,9 +249,10 @@
       <div class="filters">
         <button class="filter-btn active" onclick="setFilter('All',this)">All</button>
         <button class="filter-btn" onclick="setFilter('Overdue',this)">Overdue</button>
+        <button class="filter-btn" onclick="setFilter('Critical',this)">Critical</button>
         <button class="filter-btn" onclick="setFilter('At Risk',this)">At risk</button>
-        <button class="filter-btn" onclick="setFilter('Blocked',this)">Blocked</button>
         <button class="filter-btn" onclick="setFilter('On Track',this)">On track</button>
+        <button class="filter-btn" onclick="setFilter('Complete',this)">Complete</button>
         <button class="filter-btn" onclick="setFilter('Engineering',this)">Eng</button>
         <button class="filter-btn" onclick="setFilter('Product',this)">Product</button>
         <button class="filter-btn" onclick="setFilter('Commercial',this)">Comms</button>
@@ -304,34 +316,72 @@ let currentFilter = 'All';
 let lastSummary = '';
 let summaryType = 'daily';
 
+// ── DATE HELPERS ──────────────────────────────────────────
 function pDate(s) {
   if (!s) return null;
   const mo = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
   const m = s.match(/(\d+)[\s\-]+(\w+)[\s\-]+(\d+)/);
-  if (m && mo[m[2]]!==undefined) return new Date(+m[3] < 100 ? 2000 + +m[3] : +m[3], mo[m[2]], +m[1]);
-  return new Date(s);
+  if (m && mo[m[2]] !== undefined) {
+    const yr = +m[3] < 100 ? 2000 + +m[3] : +m[3];
+    return new Date(yr, mo[m[2]], +m[1]);
+  }
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
 }
 function dDiff(s) { const d=pDate(s); return !d||isNaN(d)?null:Math.round((d-new Date())/86400000); }
 function dSince(s) { const d=pDate(s); return !d||isNaN(d)?null:Math.round((new Date()-d)/86400000); }
-function dlCls(s,st) { if(st==='Complete') return 'dl-normal'; const d=dDiff(s); if(d===null) return 'dl-normal'; return d<0?'dl-over':d<=7?'dl-soon':'dl-normal'; }
-function dlLbl(s,st) { if(st==='Complete') return s; const d=dDiff(s); if(d===null) return s; if(d<0) return s+` (${Math.abs(d)}d over)`; if(d===0) return s+' (today)'; if(d<=7) return s+` (${d}d)`; return s; }
-function sCls(s, deadline) {
-  const overdue = deadline && (()=>{ const d=dDiff(deadline); return d!==null&&d<0; })();
-  if (overdue) return 's-missed';
-  return s==='On Track'?'s-on':s==='At Risk'?'s-risk':s==='Missed'?'s-missed':'s-complete';
+function dlCls(deadline, status) {
+  if (status==='Complete') return 'dl-normal';
+  const d = dDiff(deadline);
+  if (d===null) return 'dl-normal';
+  return d<0 ? 'dl-over' : d<=7 ? 'dl-soon' : 'dl-normal';
 }
-function sLabel(s, deadline) {
-  const overdue = deadline && (()=>{ const d=dDiff(deadline); return d!==null&&d<0; })();
-  if (overdue) return 'Overdue';
-  return s;
-}
-
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = `toast show ${type}`;
-  setTimeout(() => t.className='toast', 3500);
+function dlLbl(deadline, status) {
+  if (status==='Complete') return deadline;
+  const d = dDiff(deadline);
+  if (d===null) return deadline;
+  if (d<0) return deadline + ` (${Math.abs(d)}d overdue)`;
+  if (d===0) return deadline + ' (today)';
+  if (d<=7) return deadline + ` (${d}d)`;
+  return deadline;
 }
 
+// ── CLASSIFICATION ────────────────────────────────────────
+// OVERDUE:   deadline < today, not complete
+// CRITICAL:  has blocker AND deadline within 7 days (or at risk), not overdue
+// AT RISK:   status=At Risk AND deadline >= 7 days away, no blocker, not overdue
+// ON TRACK:  status=On Track, no blocker, not overdue
+// Complete:  status=Complete (excluded from above 4, shown separately)
+// Stale:     no update in 14+ days (independent count, items can also be in other buckets)
+
+function classify(r) {
+  if (r.status === 'Complete') return 'complete';
+  const d = dDiff(r.deadline);
+  const overdue = d !== null && d < 0;
+  if (overdue) return 'overdue';
+  const hasBlocker = r.blockers && r.blockers.trim() !== '';
+  const dueWithin7 = d !== null && d <= 7;
+  if (hasBlocker) return 'critical';
+  if (dueWithin7 && r.status === 'At Risk') return 'critical';
+  if (r.status === 'At Risk') return 'atrisk';
+  return 'ontrack';
+}
+
+function isStale(r) {
+  const d = dSince(r.lastUpdate);
+  return d !== null && d >= 14 && r.status !== 'Complete';
+}
+
+function statusDisplay(r) {
+  const cat = classify(r);
+  if (cat === 'overdue') return { cls: 's-overdue', label: 'Overdue' };
+  if (cat === 'critical') return { cls: 's-critical', label: 'Critical' };
+  if (cat === 'atrisk') return { cls: 's-atrisk', label: 'At Risk' };
+  if (cat === 'complete') return { cls: 's-complete', label: 'Complete' };
+  return { cls: 's-ontrack', label: 'On Track' };
+}
+
+// ── LOAD SHEET ────────────────────────────────────────────
 async function loadSheet() {
   document.getElementById('sync-label').textContent = 'syncing...';
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(SHEET_NAME)}?key=${API_KEY}`;
@@ -340,136 +390,161 @@ async function loadSheet() {
     if (!res.ok) throw new Error(`${res.status}`);
     const json = await res.json();
     const rows = json.values || [];
-    const headers = rows[0] || [];
-    allData = rows.slice(1).filter(r=>r[0]&&r[0].trim()!==''&&r[0]!=='Function').map(r=>({
-      fn: r[0]||'', task: r[1]||'', owner: r[2]||'',
-      deadline: r[3]||'', status: r[4]||'', lastUpdate: r[5]||'',
-      nextSteps: r[6]||'', blockers: r[7]||'', notes: r[8]||''
-    }));
+    // Row 0 = headers, skip it. Filter out any row that looks like a header
+    allData = rows.slice(1)
+      .filter(r => r[0] && r[0].trim() !== '' && r[0] !== 'Function')
+      .map(r => ({
+        fn:         r[0]||'',
+        task:       r[1]||'',
+        owner:      r[2]||'',
+        deadline:   r[3]||'',
+        status:     r[4]||'',
+        lastUpdate: r[5]||'',
+        nextSteps:  r[6]||'',
+        blockers:   r[7]||'',
+        notes:      r[8]||''
+      }));
     document.getElementById('sync-label').textContent = `synced ${new Date().toLocaleTimeString()} · ${allData.length} items`;
-    updateMetrics(); renderRAG(); renderUpdates(); renderTable();
+    updateMetrics();
+    renderRAG();
+    renderUpdates();
+    renderTable();
   } catch(e) {
     document.getElementById('sync-label').textContent = `error: ${e.message}`;
   }
 }
 
+// ── METRICS ───────────────────────────────────────────────
 function updateMetrics() {
-  const overdueCount = allData.filter(r=>{ const d=dDiff(r.deadline); return d!==null&&d<0&&r.status!=='Complete'; }).length;
-  const criticalCount = allData.filter(r=>{ const d=dDiff(r.deadline); const ov=d!==null&&d<0; return !ov&&r.status!=='Complete'&&r.blockers&&r.blockers.trim()!==''; }).length;
-  const amberCount = allData.filter(r=>{
-    const d=dDiff(r.deadline); const ov=d!==null&&d<0;
-    if (ov||r.status==='Complete'||(r.blockers&&r.blockers.trim()!=='')) return false;
-    const stale=dSince(r.lastUpdate);
-    return r.status==='At Risk'||(stale!==null&&stale>=14);
-  }).length;
-  const greenCount = allData.filter(r=>{
-    const d=dDiff(r.deadline); const ov=d!==null&&d<0;
-    if (ov||r.status==='Complete'||(r.blockers&&r.blockers.trim()!=='')) return false;
-    return r.status==='On Track'&&d!==null&&d>=0&&d<=30;
-  }).length;
-
+  const counts = { overdue:0, critical:0, atrisk:0, ontrack:0 };
+  allData.forEach(r => {
+    const cat = classify(r);
+    if (counts[cat] !== undefined) counts[cat]++;
+  });
   document.getElementById('m-total').textContent = allData.length;
-  document.getElementById('m-on').textContent = greenCount;
-  document.getElementById('m-risk').textContent = amberCount;
-  document.getElementById('m-overdue').textContent = overdueCount;
-  document.getElementById('m-blockers').textContent = criticalCount;
-  document.getElementById('m-stale').textContent = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete';}).length;
+  document.getElementById('m-overdue').textContent = counts.overdue;
+  document.getElementById('m-critical').textContent = counts.critical;
+  document.getElementById('m-atrisk').textContent = counts.atrisk;
+  document.getElementById('m-ontrack').textContent = counts.ontrack;
+  document.getElementById('m-stale').textContent = allData.filter(isStale).length;
 }
 
+// ── RAG PANELS ────────────────────────────────────────────
 function renderRAG() {
-  const isOv = r => { const d=dDiff(r.deadline); return d!==null&&d<0&&r.status!=='Complete'; };
-  const isBlk = r => r.blockers&&r.blockers.trim()!=='';
-
-  const overdueIds=new Set(), redIds=new Set(), amberIds=new Set();
-
-  const overdue = allData.filter(r => { if(!isOv(r)) return false; overdueIds.add(r.task); return true; });
-  const red = allData.filter(r => {
-    if(overdueIds.has(r.task)||r.status==='Complete'||!isBlk(r)) return false;
-    redIds.add(r.task); return true;
-  });
-  const amber = allData.filter(r => {
-    if(overdueIds.has(r.task)||redIds.has(r.task)||r.status==='Complete') return false;
-    const stale=dSince(r.lastUpdate);
-    const a=r.status==='At Risk'||(stale!==null&&stale>=14);
-    if(a) amberIds.add(r.task); return a;
-  });
-  const green = allData.filter(r => {
-    if(overdueIds.has(r.task)||redIds.has(r.task)||amberIds.has(r.task)||r.status==='Complete') return false;
-    const d=dDiff(r.deadline);
-    return r.status==='On Track'&&d!==null&&d>=0&&d<=30;
+  const buckets = { overdue:[], critical:[], atrisk:[], ontrack:[] };
+  allData.forEach(r => {
+    const cat = classify(r);
+    if (buckets[cat]) buckets[cat].push(r);
   });
 
-  document.getElementById('rag-overdue-count').textContent = overdue.length;
-  document.getElementById('rag-red-count').textContent = red.length;
-  document.getElementById('rag-amber-count').textContent = amber.length;
-  document.getElementById('rag-green-count').textContent = green.length;
+  document.getElementById('rag-overdue-count').textContent = buckets.overdue.length;
+  document.getElementById('rag-critical-count').textContent = buckets.critical.length;
+  document.getElementById('rag-atrisk-count').textContent = buckets.atrisk.length;
+  document.getElementById('rag-ontrack-count').textContent = buckets.ontrack.length;
 
-  const renderItems = (items, elId, showBlocker) => {
+  const render = (items, elId) => {
     const el = document.getElementById(elId);
-    if (!items.length) { el.innerHTML=`<div class="rag-empty">none</div>`; return; }
+    if (!items.length) { el.innerHTML = '<div class="rag-empty">none</div>'; return; }
     el.innerHTML = items.map(r => {
-      const ovDays=(()=>{ const d=dDiff(r.deadline); return d!==null&&d<0?Math.abs(d):0; })();
-      const ovTag=ovDays>0?`<span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--red);"> [${ovDays}d overdue]</span>`:'';
-      const blocker=showBlocker&&r.blockers?`<div class="rag-item-blocker">blocks: ${r.blockers}</div>`:'';
-      const ns=r.nextSteps?`<div class="rag-item-nextstep">→ ${r.nextSteps}</div>`:'';
-      const dl=r.deadline?`· ${dlLbl(r.deadline,r.status)}`:'';
+      const d = dDiff(r.deadline);
+      const ovDays = d !== null && d < 0 ? Math.abs(d) : 0;
+      const ovTag = ovDays > 0 ? `<span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--red);"> [${ovDays}d overdue]</span>` : '';
+      const blkTag = r.blockers ? `<div class="rag-item-blocker">⚠ ${r.blockers}</div>` : '';
+      const nsTag = r.nextSteps ? `<div class="rag-item-nextstep">→ ${r.nextSteps}</div>` : '';
+      const dl = r.deadline ? `· ${dlLbl(r.deadline, r.status)}` : '';
       return `<div class="rag-item">
         <div class="rag-item-title">${r.task}${ovTag}</div>
         <div class="rag-item-sub">${r.fn} · ${r.owner} ${dl}</div>
-        ${blocker}${ns}
+        ${blkTag}${nsTag}
       </div>`;
     }).join('');
   };
 
-  renderItems(overdue, 'rag-overdue', true);
-  renderItems(red, 'rag-red', true);
-  renderItems(amber, 'rag-amber', false);
-  renderItems(green, 'rag-green', false);
+  render(buckets.overdue, 'rag-overdue');
+  render(buckets.critical, 'rag-critical');
+  render(buckets.atrisk, 'rag-atrisk');
+  render(buckets.ontrack, 'rag-ontrack');
 }
 
+// ── RECENT UPDATES ────────────────────────────────────────
 function renderUpdates() {
   const recent = allData
     .filter(r => { const d = dSince(r.lastUpdate); return d !== null && d <= 3; })
-    .sort((a,b) => { const da=dSince(a.lastUpdate), db=dSince(b.lastUpdate); return da-db; });
-
+    .sort((a,b) => dSince(a.lastUpdate) - dSince(b.lastUpdate));
   const el = document.getElementById('updates-body');
   if (!recent.length) {
-    el.innerHTML = '<div class="no-updates">No updates in the last 3 days — nudge your team leads.</div>';
+    el.innerHTML = '<div class="no-updates">No updates in the last 3 days.</div>';
     return;
   }
-
   el.innerHTML = recent.map(r => {
     const d = dSince(r.lastUpdate);
-    const timeLabel = d === 0 ? 'today' : d === 1 ? 'yesterday' : `${d}d ago`;
-    const fnClass = `fn-${r.fn}`;
+    const tl = d===0?'today':d===1?'yesterday':`${d}d ago`;
+    const sd = statusDisplay(r);
     return `<div class="update-item">
-      <div class="update-time">${timeLabel}</div>
-      <span class="update-fn fn-pill ${fnClass}">${r.fn}</span>
+      <div class="update-time">${tl}</div>
+      <span class="fn-pill fn-${r.fn}" style="flex-shrink:0;margin-top:1px;">${r.fn}</span>
       <div class="update-body">
         <div class="update-task">${r.task}</div>
         ${r.notes ? `<div class="update-note">${r.notes}</div>` : ''}
         ${r.nextSteps ? `<div class="update-note" style="color:var(--blue);">→ ${r.nextSteps}</div>` : ''}
       </div>
-      <span class="status-pill ${sCls(r.status)}" style="flex-shrink:0;margin-top:1px;">${r.status}</span>
+      <span class="status-pill ${sd.cls}" style="flex-shrink:0;margin-top:1px;">${sd.label}</span>
     </div>`;
   }).join('');
 }
 
+// ── TABLE ─────────────────────────────────────────────────
 function setFilter(f, btn) {
   currentFilter = f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderTable();
 }
 
-function isOverdueItem(r) {
-  const d = dDiff(r.deadline);
-  return d!==null && d<0 && r.status!=='Complete';
+function renderTable() {
+  const filtered = allData.filter(r => {
+    if (currentFilter === 'All') return true;
+    if (currentFilter === 'Complete') return r.status === 'Complete';
+    if (['Engineering','Product','Commercial','Operations'].includes(currentFilter)) return r.fn === currentFilter;
+    // RAG filters
+    const cat = classify(r);
+    if (currentFilter === 'Overdue') return cat === 'overdue';
+    if (currentFilter === 'Critical') return cat === 'critical';
+    if (currentFilter === 'At Risk') return cat === 'atrisk';
+    if (currentFilter === 'On Track') return cat === 'ontrack';
+    return true;
+  });
+
+  const tbody = document.getElementById('tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-2);">No items match.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(r => {
+    const sd = statusDisplay(r);
+    const staleTag = isStale(r) ? `<span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--amber);margin-left:6px;">[stale]</span>` : '';
+    const blkTag = r.blockers ? `<div class="task-blocker">⚠ ${r.blockers}</div>` : '';
+    const nsTag = r.nextSteps ? `<div class="task-nextsteps">→ ${r.nextSteps}</div>` : '<span style="color:var(--text-3);font-size:12px;">—</span>';
+    return `<tr>
+      <td><span class="fn-pill fn-${r.fn}">${r.fn}</span></td>
+      <td>
+        <div class="task-name">${r.task}${staleTag}</div>
+        ${r.notes ? `<div class="task-notes">${r.notes}</div>` : ''}
+        ${blkTag}
+      </td>
+      <td>${nsTag}</td>
+      <td><span class="owner-text">${r.owner}</span></td>
+      <td><span class="${dlCls(r.deadline,r.status)}">${dlLbl(r.deadline,r.status)}</span></td>
+      <td><span class="status-pill ${sd.cls}">${sd.label}</span></td>
+    </tr>`;
+  }).join('');
 }
 
+// ── SUMMARY ───────────────────────────────────────────────
 function setSummaryType(type, btn) {
   summaryType = type;
-  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('summary-text').textContent = type === 'daily'
     ? 'Daily briefing — deadlines, blockers, stale items, and updates since yesterday.'
@@ -478,60 +553,41 @@ function setSummaryType(type, btn) {
   lastSummary = '';
 }
 
-function renderTable() {
-  const filtered = allData.filter(r => {
-    if (currentFilter==='All') return true;
-    if (currentFilter==='Overdue') return isOverdueItem(r);
-    if (currentFilter==='Blocked') return r.blockers&&r.blockers.trim()!=='';
-    return r.fn===currentFilter||r.status===currentFilter;
-  });
-  const tbody = document.getElementById('tbody');
-  if (!filtered.length) { tbody.innerHTML='<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-2);">No items match.</td></tr>'; return; }
-  tbody.innerHTML = filtered.map(r => {
-    const stale = dSince(r.lastUpdate);
-    const sf = stale!==null&&stale>=7&&r.status!=='Complete'?`<div class="stale-tag">⚠ no update ${stale}d</div>`:'';
-    const blocker = r.blockers&&r.blockers.trim()!==''?`<div class="task-blocker">blocks: ${r.blockers}</div>`:'';
-    const ns = r.nextSteps&&r.nextSteps.trim()!==''?`<div class="task-nextsteps">→ ${r.nextSteps}</div>`:'<span style="color:var(--text-3);font-size:12px;">—</span>';
-    return `<tr>
-      <td><span class="fn-pill fn-${r.fn}">${r.fn}</span></td>
-      <td><div class="task-name">${r.task}</div>${r.notes?`<div class="task-notes">${r.notes}</div>`:''}${blocker}${sf}</td>
-      <td>${ns}</td>
-      <td><span class="owner-text">${r.owner}</span></td>
-      <td><span class="${dlCls(r.deadline,r.status)}">${dlLbl(r.deadline,r.status)}</span></td>
-      <td><span class="status-pill ${sCls(r.status, r.deadline)}">${sLabel(r.status, r.deadline)}</span></td>
-    </tr>`;
-  }).join('');
-}
-
 function buildPrompt(type, today) {
-  const atRisk = allData.filter(r=>r.status==='At Risk');
-  const stale = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete';});
-  const soon7 = allData.filter(r=>{const d=dDiff(r.deadline);return d!==null&&d>=0&&d<=7;});
-  const soon14 = allData.filter(r=>{const d=dDiff(r.deadline);return d!==null&&d>7&&d<=14;});
-  const blockers = allData.filter(r=>r.blockers&&r.blockers.trim()!=='');
-  const recentUpdates = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d<=1;});
+  const buckets = { overdue:[], critical:[], atrisk:[], ontrack:[] };
+  allData.forEach(r => { const c=classify(r); if(buckets[c]) buckets[c].push(r); });
+  const stale = allData.filter(isStale);
+  const recentUpdates = allData.filter(r=>{ const d=dSince(r.lastUpdate); return d!==null&&d<=1; });
   const dataStr = allData.map(r=>`[${r.fn}] ${r.task} | Owner: ${r.owner} | Due: ${r.deadline} | Status: ${r.status} | Updated: ${r.lastUpdate} | Notes: ${r.notes} | Next Steps: ${r.nextSteps} | Blockers: ${r.blockers}`).join('\n');
 
-  if (type==='daily') return `You are the ops assistant for LightWork AI (20-30 person startup). Today is ${today}.
+  if (type === 'daily') return `You are the ops assistant for LightWork AI (20-30 person startup). Today is ${today}.
 
-TRACKER:
+TRACKER DATA:
 ${dataStr}
 
-SIGNALS: updated yesterday: ${recentUpdates.map(r=>r.task).join(', ')||'none'} | blockers: ${blockers.map(r=>r.task+' ('+r.blockers+')').join('; ')||'none'} | at risk: ${atRisk.length} | due ≤7d: ${soon7.length} | stale 7d+: ${stale.length}
+CLASSIFICATION SUMMARY:
+- Overdue (deadline missed): ${buckets.overdue.map(r=>r.task).join(', ')||'none'}
+- Critical (blocker or due ≤7d at risk): ${buckets.critical.map(r=>r.task).join(', ')||'none'}
+- At risk: ${buckets.atrisk.map(r=>r.task).join(', ')||'none'}
+- Stale (no update 14d+): ${stale.map(r=>r.task).join(', ')||'none'}
+- Updated yesterday: ${recentUpdates.map(r=>r.task).join(', ')||'none'}
 
 DAILY MORNING BRIEFING — ${today}
 
 UPDATES SINCE YESTERDAY
-[what moved — if nothing updated in 24h say so]
+[what moved — if nothing say so]
 
-DEADLINES THIS WEEK
-[items due ≤7 days with owner + next step]
+OVERDUE — NEEDS IMMEDIATE ACTION
+[each overdue item with owner and next step]
 
-ACTIVE BLOCKERS
-[what's blocked, what it's holding up, who acts]
+CRITICAL — BLOCKERS & IMMINENT DEADLINES
+[each critical item with what's blocked and action needed]
 
-STALE — NEEDS A NUDGE
-[items 7d+ no update — who to chase today]
+AT RISK
+[each at-risk item with suggested action]
+
+STALE ITEMS — CHASE TODAY
+[items with no update in 14+ days]
 
 TODAY'S 3 PRIORITIES
 [specific, owned, actionable]
@@ -540,30 +596,30 @@ Tight. Scannable in 60 seconds.`;
 
   return `You are the ops assistant for LightWork AI (20-30 person startup). Today is ${today} (Monday).
 
-TRACKER:
+TRACKER DATA:
 ${dataStr}
 
-SIGNALS: blockers: ${blockers.map(r=>r.task+' ('+r.blockers+')').join('; ')||'none'} | at risk: ${atRisk.length} | due this week: ${soon7.length} | due next week: ${soon14.length} | stale 7d+: ${stale.length}
+CLASSIFICATION: overdue: ${buckets.overdue.length} | critical: ${buckets.critical.length} | at risk: ${buckets.atrisk.length} | on track: ${buckets.ontrack.length} | stale: ${stale.length}
 
 MONDAY MORNING WEEK-SETTER — w/c ${today}
 
 THIS WEEK'S HEADLINE
 [2-3 sentences — what kind of week is this?]
 
-MUST LAND THIS WEEK
-[due ≤7 days — owner, deadline, next step]
+OVERDUE — CLEAR IMMEDIATELY
+[each item, owner, action]
 
-BLOCKERS TO CLEAR TODAY
-[what's stuck, what it's holding up, who acts]
+CRITICAL THIS WEEK
+[blockers to clear, imminent deadlines]
 
 AT RISK — NEEDS INTERVENTION
 [specific action per item]
 
-LONG LEAD ITEMS NOT MOVING
-[stale items on important long-horizon work]
+STALE — NOT MOVING
+[items drifting without updates]
 
-LOOKING AHEAD (NEXT 2 WEEKS)
-[items due 8-14 days that need setup now]
+LOOKING AHEAD
+[what needs setup now for the next 2 weeks]
 
 THIS WEEK'S TOP 5 PRIORITIES
 [ranked, specific, owned]
@@ -599,10 +655,12 @@ async function sendToSlack() {
   btn.innerHTML = '<span class="spinning">↻</span> Sending...';
   const today = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const title = summaryType==='weekly' ? '📅 LightWork — Weekly Ops Summary' : '☀️ LightWork — Daily Briefing';
+  const buckets = {overdue:0,critical:0,atrisk:0,ontrack:0};
+  allData.forEach(r=>{ const c=classify(r); if(buckets[c]!==undefined) buckets[c]++; });
   const payload = {
     blocks:[
       {type:'header',text:{type:'plain_text',text:title,emoji:true}},
-      {type:'context',elements:[{type:'mrkdwn',text:`${today} · ${allData.length} commitments · *${allData.filter(r=>r.status==='At Risk').length} at risk* · ${allData.filter(r=>r.blockers&&r.blockers.trim()!=='').length} blockers`}]},
+      {type:'context',elements:[{type:'mrkdwn',text:`${today} · ${allData.length} total · 🔴 ${buckets.overdue} overdue · 🟠 ${buckets.critical} critical · 🟡 ${buckets.atrisk} at risk · 🟢 ${buckets.ontrack} on track`}]},
       {type:'divider'},
       {type:'section',text:{type:'mrkdwn',text:lastSummary.length>2900?lastSummary.slice(0,2900)+'...':lastSummary}},
       {type:'divider'},
@@ -610,10 +668,17 @@ async function sendToSlack() {
     ]
   };
   try {
-    const res = await fetch('/api/summarise', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'slack',...payload})});
+    const res = await fetch('/api/summarise',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'slack',...payload})});
     const data = await res.json();
-    if (data.ok) showToast('✓ Sent to Slack','ok'); else showToast('Slack rejected the message','err');
-  } catch(e) { showToast('Failed to send to Slack','err'); }
+    const t = document.getElementById('toast');
+    if (data.ok) { t.textContent='✓ Sent to Slack'; t.className='toast show ok'; }
+    else { t.textContent='Slack rejected the message'; t.className='toast show err'; }
+    setTimeout(()=>t.className='toast',3500);
+  } catch(e) {
+    const t = document.getElementById('toast');
+    t.textContent='Failed to send'; t.className='toast show err';
+    setTimeout(()=>t.className='toast',3500);
+  }
   btn.disabled = false;
   btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 15a2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2h2v2zm1 0a2 2 0 0 1 2-2 2 2 0 0 1 2 2v5a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-5zm2-9a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2v2H9zm0 1a2 2 0 0 1 2 2 2 2 0 0 1-2 2H4a2 2 0 0 1-2-2 2 2 0 0 1 2-2h5zm9 2a2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2h-2V9zm-1 0a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2 2 2 0 0 1 2 2v5zm-2 9a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2v-2h2zm0-1a2 2 0 0 1-2-2 2 2 0 0 1 2-2h5a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-5z" fill="currentColor"/></svg> Send to Slack';
 }
