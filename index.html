@@ -170,9 +170,9 @@
 
   <div class="metrics-grid">
     <div class="metric"><div class="metric-label">Total</div><div class="metric-value" id="m-total">—</div></div>
-    <div class="metric"><div class="metric-label">On track</div><div class="metric-value good" id="m-on">—</div></div>
+    <div class="metric"><div class="metric-label">On track (30d)</div><div class="metric-value good" id="m-on">—</div></div>
     <div class="metric"><div class="metric-label">At risk</div><div class="metric-value risk" id="m-risk">—</div></div>
-    <div class="metric"><div class="metric-label">Missed</div><div class="metric-value danger" id="m-missed">—</div></div>
+    <div class="metric"><div class="metric-label">Critical</div><div class="metric-value danger" id="m-missed">—</div></div>
     <div class="metric"><div class="metric-label">Blockers</div><div class="metric-value danger" id="m-blockers">—</div></div>
     <div class="metric"><div class="metric-label">Stale 7d+</div><div class="metric-value risk" id="m-stale">—</div></div>
   </div>
@@ -337,10 +337,26 @@ async function loadSheet() {
 }
 
 function updateMetrics() {
+  const redIds = new Set();
+  allData.forEach(r => {
+    const overdue = (()=>{ const d=dDiff(r.deadline); return d!==null&&d<0; })();
+    if (r.status==='Missed'||overdue||(r.blockers&&r.blockers.trim()!=='')) redIds.add(r.task);
+  });
+  const amberCount = allData.filter(r => {
+    if (redIds.has(r.task)||r.status==='Complete') return false;
+    const stale = dSince(r.lastUpdate);
+    return r.status==='At Risk' || (stale!==null&&stale>=14);
+  }).length;
+  const greenCount = allData.filter(r => {
+    if (redIds.has(r.task)||r.status==='Complete') return false;
+    const d = dDiff(r.deadline);
+    return r.status==='On Track' && d!==null && d>=0 && d<=30;
+  }).length;
+
   document.getElementById('m-total').textContent = allData.length;
-  document.getElementById('m-on').textContent = allData.filter(r=>r.status==='On Track').length;
-  document.getElementById('m-risk').textContent = allData.filter(r=>r.status==='At Risk').length;
-  document.getElementById('m-missed').textContent = allData.filter(r=>r.status==='Missed').length;
+  document.getElementById('m-on').textContent = greenCount;
+  document.getElementById('m-risk').textContent = amberCount;
+  document.getElementById('m-missed').textContent = redIds.size;
   document.getElementById('m-blockers').textContent = allData.filter(r=>r.blockers&&r.blockers.trim()!==''&&r.status!=='Complete').length;
   document.getElementById('m-stale').textContent = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete';}).length;
 }
