@@ -612,7 +612,7 @@ RECOMMENDED ACTIONS THIS WEEK
 [3-4 specific actions]
  
 Sharp, specific, no fluff.`;
- 
+ try {
   const res = await fetch('/api/summarise', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
