@@ -345,11 +345,22 @@ function updateMetrics() {
 
 function renderRAG() {
   // RED: missed + active blockers
-  const red = allData.filter(r=>r.status==='Missed'||(r.blockers&&r.blockers.trim()!==''));
-  // AMBER: at risk or stale 7d+
-  const amber = allData.filter(r=>r.status==='At Risk'||(()=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete'&&r.status!=='Missed'&&!(r.blockers&&r.blockers.trim()!=='');})());
-  // GREEN: on track due within 14 days (notable upcoming)
-  const green = allData.filter(r=>r.status==='On Track'&&(()=>{const d=dDiff(r.deadline);return d!==null&&d>=0&&d<=14;})());
+  const redIds = new Set();
+  const red = allData.filter(r => {
+    const isRed = r.status==='Missed' || (r.blockers&&r.blockers.trim()!=='');
+    if (isRed) redIds.add(r.task);
+    return isRed;
+  });
+  const amber = allData.filter(r => {
+    if (redIds.has(r.task)) return false;
+    const stale = dSince(r.lastUpdate);
+    return r.status==='At Risk' || (stale!==null&&stale>=14&&r.status!=='Complete');
+  });
+  const green = allData.filter(r => {
+    if (redIds.has(r.task)) return false;
+    const d = dDiff(r.deadline);
+    return r.status==='On Track' && d!==null && d>=0 && d<=30;
+  });
 
   document.getElementById('rag-red-count').textContent = red.length;
   document.getElementById('rag-amber-count').textContent = amber.length;
