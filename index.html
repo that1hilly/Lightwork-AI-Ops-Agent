@@ -9,21 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F7F6F3;
-    --surface: #FFFFFF;
-    --border: #E4E2DC;
-    --border-strong: #C8C5BC;
-    --text: #1A1916;
-    --text-2: #6B6860;
-    --text-3: #9B9890;
-    --green: #2D6A4F;
-    --green-bg: #D8F3DC;
-    --amber: #7B5E00;
-    --amber-bg: #FFF3CD;
-    --red: #8B2020;
-    --red-bg: #FFE5E5;
-    --blue: #1A4A7A;
-    --blue-bg: #E8F0FB;
+    --bg: #F7F6F3; --surface: #FFFFFF;
+    --border: #E4E2DC; --border-strong: #C8C5BC;
+    --text: #1A1916; --text-2: #6B6860; --text-3: #9B9890;
+    --green: #2D6A4F; --green-bg: #D8F3DC; --green-border: #A8D5B5;
+    --amber: #7B5E00; --amber-bg: #FFF3CD; --amber-border: #E8C84A;
+    --red: #8B2020; --red-bg: #FFE5E5; --red-border: #F0A0A0;
+    --blue: #1A4A7A; --blue-bg: #E8F0FB;
     --eng: #1A4A7A; --eng-bg: #E8F0FB;
     --prod: #2D6A4F; --prod-bg: #D8F3DC;
     --comm: #7B5E00; --comm-bg: #FFF3CD;
@@ -32,6 +24,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+
   .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   .header-left { display: flex; align-items: center; gap: 12px; }
   .logo { font-size: 15px; font-weight: 500; letter-spacing: -0.02em; }
@@ -41,8 +34,11 @@
   .sync-badge { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
   .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
   .main { max-width: 1200px; margin: 0 auto; padding: 32px 32px 64px; }
   .page-title { font-size: 13px; font-family: 'DM Mono', monospace; color: var(--text-3); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px; }
+
+  /* METRICS */
   .metrics-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
   .metric { background: var(--surface); padding: 20px 20px 18px; }
   .metric-label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-3); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; }
@@ -50,6 +46,49 @@
   .metric-value.risk { color: var(--amber); }
   .metric-value.danger { color: var(--red); }
   .metric-value.good { color: var(--green); }
+
+  /* RAG GRID */
+  .rag-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .rag-panel { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border); }
+  .rag-header { padding: 12px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid; }
+  .rag-header.red { background: var(--red-bg); border-color: var(--red-border); }
+  .rag-header.amber { background: var(--amber-bg); border-color: var(--amber-border); }
+  .rag-header.green { background: var(--green-bg); border-color: var(--green-border); }
+  .rag-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .rag-dot.red { background: var(--red); }
+  .rag-dot.amber { background: #D4900A; }
+  .rag-dot.green { background: var(--green); }
+  .rag-title { font-size: 12px; font-weight: 500; font-family: 'DM Mono', monospace; }
+  .rag-title.red { color: var(--red); }
+  .rag-title.amber { color: var(--amber); }
+  .rag-title.green { color: var(--green); }
+  .rag-count { font-size: 11px; font-family: 'DM Mono', monospace; margin-left: auto; }
+  .rag-count.red { color: var(--red); }
+  .rag-count.amber { color: var(--amber); }
+  .rag-count.green { color: var(--green); }
+  .rag-body { background: var(--surface); }
+  .rag-item { padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .rag-item:last-child { border-bottom: none; }
+  .rag-item-title { color: var(--text); line-height: 1.4; font-weight: 400; }
+  .rag-item-sub { font-size: 11px; color: var(--text-2); margin-top: 2px; font-family: 'DM Mono', monospace; }
+  .rag-item-nextstep { font-size: 11px; color: var(--blue); margin-top: 3px; }
+  .rag-item-blocker { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--red); background: var(--red-bg); padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 3px; }
+  .rag-empty { padding: 16px; font-size: 12px; color: var(--text-3); font-family: 'DM Mono', monospace; text-align: center; }
+
+  /* UPDATES FEED */
+  .updates-feed { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 16px; overflow: hidden; }
+  .updates-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .updates-title { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .update-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .update-item:last-child { border-bottom: none; }
+  .update-time { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text-3); white-space: nowrap; margin-top: 2px; min-width: 60px; }
+  .update-fn { font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 500; padding: 2px 6px; border-radius: 3px; white-space: nowrap; margin-top: 1px; flex-shrink: 0; }
+  .update-body { flex: 1; }
+  .update-task { color: var(--text); font-weight: 400; line-height: 1.4; }
+  .update-note { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+  .no-updates { padding: 16px 20px; font-size: 12px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+
+  /* TABLE */
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 16px; overflow: hidden; }
   .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .card-title { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
@@ -72,8 +111,8 @@
   .fn-Operations { background: var(--ops-bg); color: var(--ops); }
   .task-name { font-weight: 400; color: var(--text); line-height: 1.4; }
   .task-notes { font-size: 12px; color: var(--text-2); margin-top: 3px; line-height: 1.4; }
-  .task-nextsteps { font-size: 12px; color: var(--blue); margin-top: 3px; line-height: 1.4; display: flex; gap: 4px; align-items: flex-start; }
-  .task-blocker { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--red); margin-top: 4px; background: var(--red-bg); padding: 2px 6px; border-radius: 3px; display: inline-block; }
+  .task-nextsteps { font-size: 12px; color: var(--blue); margin-top: 3px; line-height: 1.4; }
+  .task-blocker { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--red); background: var(--red-bg); padding: 2px 6px; border-radius: 3px; display: inline-block; margin-top: 3px; }
   .stale-tag { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--red); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
   .status-pill { font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 500; padding: 3px 8px; border-radius: 4px; white-space: nowrap; display: inline-block; }
   .s-on { background: var(--green-bg); color: var(--green); }
@@ -84,16 +123,8 @@
   .dl-soon { color: var(--amber); font-size: 12px; font-family: 'DM Mono', monospace; font-weight: 500; }
   .dl-over { color: var(--red); font-size: 12px; font-family: 'DM Mono', monospace; font-weight: 500; }
   .owner-text { color: var(--text-2); font-size: 12px; white-space: nowrap; }
-  .alerts-list { padding: 4px 0; }
-  .alert-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .alert-item:last-child { border-bottom: none; }
-  .alert-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-  .dot-risk { background: var(--amber); }
-  .dot-stale { background: var(--red); }
-  .dot-soon { background: var(--blue); }
-  .dot-blocker { background: var(--red); }
-  .alert-title { color: var(--text); line-height: 1.4; }
-  .alert-sub { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+  /* SUMMARY */
   .summary-body { padding: 20px; }
   .summary-type-row { display: flex; gap: 8px; margin-bottom: 16px; }
   .type-btn { font-size: 12px; font-family: 'DM Mono', monospace; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; transition: all 0.15s; }
@@ -113,14 +144,15 @@
   .toast.show { display: flex; }
   .toast.ok { border-color: var(--green); color: var(--green); background: var(--green-bg); }
   .toast.err { border-color: var(--red); color: var(--red); background: var(--red-bg); }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spinning { animation: spin 0.8s linear infinite; display: inline-block; }
   .refresh-btn { font-size: 11px; font-family: 'DM Mono', monospace; padding: 5px 12px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
   .refresh-btn:hover { border-color: var(--border-strong); color: var(--text); }
-  @media (max-width: 768px) { .metrics-grid { grid-template-columns: repeat(3, 1fr); } .main { padding: 20px 16px 48px; } .header { padding: 0 16px; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinning { animation: spin 0.8s linear infinite; display: inline-block; }
+  @media (max-width: 900px) { .rag-grid { grid-template-columns: 1fr; } .metrics-grid { grid-template-columns: repeat(3, 1fr); } .main { padding: 20px 16px 48px; } .header { padding: 0 16px; } }
 </style>
 </head>
 <body>
+
 <header class="header">
   <div class="header-left">
     <div class="logo">LightWork<span>AI</span></div>
@@ -141,24 +173,54 @@
     <div class="metric"><div class="metric-label">On track</div><div class="metric-value good" id="m-on">—</div></div>
     <div class="metric"><div class="metric-label">At risk</div><div class="metric-value risk" id="m-risk">—</div></div>
     <div class="metric"><div class="metric-label">Missed</div><div class="metric-value danger" id="m-missed">—</div></div>
-    <div class="metric"><div class="metric-label">Stale 7d+</div><div class="metric-value risk" id="m-stale">—</div></div>
     <div class="metric"><div class="metric-label">Blockers</div><div class="metric-value danger" id="m-blockers">—</div></div>
+    <div class="metric"><div class="metric-label">Stale 7d+</div><div class="metric-value risk" id="m-stale">—</div></div>
   </div>
 
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        Flags requiring attention
+  <!-- RAG STATUS -->
+  <div class="rag-grid" id="rag-grid">
+    <div class="rag-panel">
+      <div class="rag-header red">
+        <div class="rag-dot red"></div>
+        <span class="rag-title red">Critical</span>
+        <span class="rag-count red" id="rag-red-count">0</span>
+      </div>
+      <div class="rag-body" id="rag-red"></div>
+    </div>
+    <div class="rag-panel">
+      <div class="rag-header amber">
+        <div class="rag-dot amber"></div>
+        <span class="rag-title amber">At risk</span>
+        <span class="rag-count amber" id="rag-amber-count">0</span>
+      </div>
+      <div class="rag-body" id="rag-amber"></div>
+    </div>
+    <div class="rag-panel">
+      <div class="rag-header green">
+        <div class="rag-dot green"></div>
+        <span class="rag-title green">On track</span>
+        <span class="rag-count green" id="rag-green-count">0</span>
+      </div>
+      <div class="rag-body" id="rag-green"></div>
+    </div>
+  </div>
+
+  <!-- RECENT UPDATES -->
+  <div class="updates-feed">
+    <div class="updates-header">
+      <div class="updates-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Recent updates
       </div>
       <button class="refresh-btn" onclick="loadSheet()">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         Refresh
       </button>
     </div>
-    <div class="alerts-list" id="alerts"></div>
+    <div id="updates-body"></div>
   </div>
 
+  <!-- ALL COMMITMENTS TABLE -->
   <div class="card">
     <div class="card-header">
       <div class="card-title">
@@ -167,6 +229,7 @@
       </div>
       <div class="filters">
         <button class="filter-btn active" onclick="setFilter('All',this)">All</button>
+        <button class="filter-btn" onclick="setFilter('Missed',this)">Missed</button>
         <button class="filter-btn" onclick="setFilter('At Risk',this)">At risk</button>
         <button class="filter-btn" onclick="setFilter('Blocked',this)">Blocked</button>
         <button class="filter-btn" onclick="setFilter('On Track',this)">On track</button>
@@ -193,6 +256,7 @@
     </div>
   </div>
 
+  <!-- SUMMARY -->
   <div class="card">
     <div class="card-header">
       <div class="card-title">
@@ -202,10 +266,10 @@
     </div>
     <div class="summary-body">
       <div class="summary-type-row">
-        <button class="type-btn active" id="type-daily" onclick="setSummaryType('daily', this)">Daily (Tue–Fri)</button>
-        <button class="type-btn" id="type-weekly" onclick="setSummaryType('weekly', this)">Monday morning</button>
+        <button class="type-btn active" id="type-daily" onclick="setSummaryType('daily',this)">Daily (Tue–Fri)</button>
+        <button class="type-btn" id="type-weekly" onclick="setSummaryType('weekly',this)">Monday morning</button>
       </div>
-      <div class="summary-text" id="summary-text">Select a summary type and hit Generate — Claude will produce either a tight daily briefing or a full Monday week-setter, pulling live from the sheet.</div>
+      <div class="summary-text" id="summary-text">Select a summary type and hit Generate — Claude produces either a tight daily briefing or a full Monday week-setter, pulling live from the sheet.</div>
       <div class="btn-row">
         <button class="btn btn-primary" id="gen-btn" onclick="generateSummary()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -225,6 +289,7 @@
 const SHEET_ID = '1-hn0MY7yQ4B5OmL1Kqh-4AyKG22xsj81MFjnXC_99A4';
 const API_KEY = 'AIzaSyD1POtKeY__vIJ72C-pDv7egD5GIEXub_c';
 const SHEET_NAME = 'Commitment Tracker';
+const ANTHROPIC_KEY = '';
 
 let allData = [];
 let currentFilter = 'All';
@@ -245,8 +310,7 @@ function sCls(s) { return s==='On Track'?'s-on':s==='At Risk'?'s-risk':s==='Miss
 
 function showToast(msg, type) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast show ${type}`;
+  t.textContent = msg; t.className = `toast show ${type}`;
   setTimeout(() => t.className='toast', 3500);
 }
 
@@ -264,7 +328,7 @@ async function loadSheet() {
       notes: r[6]||'', nextSteps: r[7]||'', blockers: r[8]||''
     }));
     document.getElementById('sync-label').textContent = `synced ${new Date().toLocaleTimeString()} · ${allData.length} items`;
-    updateMetrics(); renderAlerts(); renderTable();
+    updateMetrics(); renderRAG(); renderUpdates(); renderTable();
   } catch(e) {
     document.getElementById('sync-label').textContent = `error: ${e.message}`;
   }
@@ -275,23 +339,68 @@ function updateMetrics() {
   document.getElementById('m-on').textContent = allData.filter(r=>r.status==='On Track').length;
   document.getElementById('m-risk').textContent = allData.filter(r=>r.status==='At Risk').length;
   document.getElementById('m-missed').textContent = allData.filter(r=>r.status==='Missed').length;
-  document.getElementById('m-stale').textContent = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete';}).length;
   document.getElementById('m-blockers').textContent = allData.filter(r=>r.blockers&&r.blockers.trim()!=='').length;
+  document.getElementById('m-stale').textContent = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete';}).length;
 }
 
-function renderAlerts() {
-  const alerts = [];
-  allData.filter(r=>r.blockers&&r.blockers.trim()!=='').forEach(r=>
-    alerts.push({cls:'dot-blocker',title:`🔴 Blocker — <strong>${r.task}</strong>`,sub:`${r.fn} · ${r.owner} · ${r.blockers}`}));
-  allData.filter(r=>r.status==='At Risk').forEach(r=>
-    alerts.push({cls:'dot-risk',title:`<strong>${r.fn}</strong> — ${r.task}`,sub:`${r.owner} · due ${r.deadline}${r.notes?' · '+r.notes:''}`}));
-  allData.forEach(r=>{const s=dSince(r.lastUpdate);if(s!==null&&s>=7&&r.status!=='Complete'&&r.status!=='At Risk')
-    alerts.push({cls:'dot-stale',title:`No update in ${s} days — ${r.task}`,sub:`${r.fn} · ${r.owner}${r.nextSteps?' · Next: '+r.nextSteps:''}`});});
-  allData.forEach(r=>{const d=dDiff(r.deadline);if(d!==null&&d>=0&&d<=7&&r.status==='On Track')
-    alerts.push({cls:'dot-soon',title:`Due in ${d===0?'today':d+'d'} — ${r.task}`,sub:`${r.fn} · ${r.owner}`});});
-  const el = document.getElementById('alerts');
-  if (!alerts.length) { el.innerHTML='<div style="padding:16px 20px;font-size:13px;color:var(--text-2);">No flags — all commitments on track.</div>'; return; }
-  el.innerHTML = alerts.map(a=>`<div class="alert-item"><div class="alert-dot ${a.cls}"></div><div><div class="alert-title">${a.title}</div><div class="alert-sub">${a.sub}</div></div></div>`).join('');
+function renderRAG() {
+  // RED: missed + active blockers
+  const red = allData.filter(r=>r.status==='Missed'||(r.blockers&&r.blockers.trim()!==''));
+  // AMBER: at risk or stale 7d+
+  const amber = allData.filter(r=>r.status==='At Risk'||(()=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete'&&r.status!=='Missed'&&!(r.blockers&&r.blockers.trim()!=='');})());
+  // GREEN: on track due within 14 days (notable upcoming)
+  const green = allData.filter(r=>r.status==='On Track'&&(()=>{const d=dDiff(r.deadline);return d!==null&&d>=0&&d<=14;})());
+
+  document.getElementById('rag-red-count').textContent = red.length;
+  document.getElementById('rag-amber-count').textContent = amber.length;
+  document.getElementById('rag-green-count').textContent = green.length;
+
+  const renderItems = (items, elId, showBlocker) => {
+    const el = document.getElementById(elId);
+    if (!items.length) { el.innerHTML = `<div class="rag-empty">none</div>`; return; }
+    el.innerHTML = items.map(r => {
+      const blocker = showBlocker && r.blockers ? `<div class="rag-item-blocker">blocks: ${r.blockers}</div>` : '';
+      const ns = r.nextSteps ? `<div class="rag-item-nextstep">→ ${r.nextSteps}</div>` : '';
+      const dl = r.deadline ? `· ${dlLbl(r.deadline, r.status)}` : '';
+      return `<div class="rag-item">
+        <div class="rag-item-title">${r.task}</div>
+        <div class="rag-item-sub">${r.fn} · ${r.owner} ${dl}</div>
+        ${blocker}${ns}
+      </div>`;
+    }).join('');
+  };
+
+  renderItems(red, 'rag-red', true);
+  renderItems(amber, 'rag-amber', false);
+  renderItems(green, 'rag-green', false);
+}
+
+function renderUpdates() {
+  const recent = allData
+    .filter(r => { const d = dSince(r.lastUpdate); return d !== null && d <= 3; })
+    .sort((a,b) => { const da=dSince(a.lastUpdate), db=dSince(b.lastUpdate); return da-db; });
+
+  const el = document.getElementById('updates-body');
+  if (!recent.length) {
+    el.innerHTML = '<div class="no-updates">No updates in the last 3 days — nudge your team leads.</div>';
+    return;
+  }
+
+  el.innerHTML = recent.map(r => {
+    const d = dSince(r.lastUpdate);
+    const timeLabel = d === 0 ? 'today' : d === 1 ? 'yesterday' : `${d}d ago`;
+    const fnClass = `fn-${r.fn}`;
+    return `<div class="update-item">
+      <div class="update-time">${timeLabel}</div>
+      <span class="update-fn fn-pill ${fnClass}">${r.fn}</span>
+      <div class="update-body">
+        <div class="update-task">${r.task}</div>
+        ${r.notes ? `<div class="update-note">${r.notes}</div>` : ''}
+        ${r.nextSteps ? `<div class="update-note" style="color:var(--blue);">→ ${r.nextSteps}</div>` : ''}
+      </div>
+      <span class="status-pill ${sCls(r.status)}" style="flex-shrink:0;margin-top:1px;">${r.status}</span>
+    </div>`;
+  }).join('');
 }
 
 function setFilter(f, btn) {
@@ -313,14 +422,14 @@ function setSummaryType(type, btn) {
 }
 
 function renderTable() {
-  const filtered = allData.filter(r=>{
-    if(currentFilter==='All') return true;
-    if(currentFilter==='Blocked') return r.blockers&&r.blockers.trim()!=='';
+  const filtered = allData.filter(r => {
+    if (currentFilter==='All') return true;
+    if (currentFilter==='Blocked') return r.blockers&&r.blockers.trim()!=='';
     return r.fn===currentFilter||r.status===currentFilter;
   });
   const tbody = document.getElementById('tbody');
   if (!filtered.length) { tbody.innerHTML='<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-2);">No items match.</td></tr>'; return; }
-  tbody.innerHTML = filtered.map(r=>{
+  tbody.innerHTML = filtered.map(r => {
     const stale = dSince(r.lastUpdate);
     const sf = stale!==null&&stale>=7&&r.status!=='Complete'?`<div class="stale-tag">⚠ no update ${stale}d</div>`:'';
     const blocker = r.blockers&&r.blockers.trim()!==''?`<div class="task-blocker">blocks: ${r.blockers}</div>`:'';
@@ -339,85 +448,69 @@ function renderTable() {
 function buildPrompt(type, today) {
   const atRisk = allData.filter(r=>r.status==='At Risk');
   const stale = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete';});
-  const soon = allData.filter(r=>{const d=dDiff(r.deadline);return d!==null&&d>=0&&d<=14;});
+  const soon7 = allData.filter(r=>{const d=dDiff(r.deadline);return d!==null&&d>=0&&d<=7;});
+  const soon14 = allData.filter(r=>{const d=dDiff(r.deadline);return d!==null&&d>7&&d<=14;});
   const blockers = allData.filter(r=>r.blockers&&r.blockers.trim()!=='');
   const recentUpdates = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d<=1;});
-
   const dataStr = allData.map(r=>`[${r.fn}] ${r.task} | Owner: ${r.owner} | Due: ${r.deadline} | Status: ${r.status} | Updated: ${r.lastUpdate} | Notes: ${r.notes} | Next Steps: ${r.nextSteps} | Blockers: ${r.blockers}`).join('\n');
 
-  if (type === 'daily') {
-    return `You are an operations assistant for LightWork AI, a 20-30 person startup. Today is ${today} (daily morning briefing).
+  if (type==='daily') return `You are the ops assistant for LightWork AI (20-30 person startup). Today is ${today}.
 
-TRACKER DATA:
+TRACKER:
 ${dataStr}
 
-KEY SIGNALS:
-- Items updated in last 24h: ${recentUpdates.length} (${recentUpdates.map(r=>r.task).join(', ')||'none'})
-- Blockers active: ${blockers.length} (${blockers.map(r=>r.task+': '+r.blockers).join('; ')||'none'})
-- At risk: ${atRisk.length}
-- Due within 7 days: ${soon.filter(r=>{const d=dDiff(r.deadline);return d!==null&&d<=7;}).length}
-- Stale 7d+: ${stale.length}
+SIGNALS: updated yesterday: ${recentUpdates.map(r=>r.task).join(', ')||'none'} | blockers: ${blockers.map(r=>r.task+' ('+r.blockers+')').join('; ')||'none'} | at risk: ${atRisk.length} | due ≤7d: ${soon7.length} | stale 7d+: ${stale.length}
 
-Write a tight DAILY MORNING BRIEFING. Format:
-
-DAILY OPS BRIEFING — ${today}
+DAILY MORNING BRIEFING — ${today}
 
 UPDATES SINCE YESTERDAY
-[What moved — if nothing updated in 24h, say so clearly]
+[what moved — if nothing updated in 24h say so]
 
 DEADLINES THIS WEEK
-[Items due within 7 days with owner and next step]
+[items due ≤7 days with owner + next step]
 
-BLOCKERS
-[Any active blockers and what they're holding up]
+ACTIVE BLOCKERS
+[what's blocked, what it's holding up, who acts]
 
-STALE ITEMS NEEDING A NUDGE
-[Items with no update in 7+ days — who to chase]
+STALE — NEEDS A NUDGE
+[items 7d+ no update — who to chase today]
 
-TODAY'S PRIORITY ACTIONS
-[3 specific things to do today]
+TODAY'S 3 PRIORITIES
+[specific, owned, actionable]
 
-Tight, specific, scannable in 60 seconds.`;
-  }
+Tight. Scannable in 60 seconds.`;
 
-  return `You are an operations assistant for LightWork AI, a 20-30 person startup. Today is ${today} (Monday morning — start of week).
+  return `You are the ops assistant for LightWork AI (20-30 person startup). Today is ${today} (Monday).
 
-TRACKER DATA:
+TRACKER:
 ${dataStr}
 
-KEY SIGNALS:
-- Blockers: ${blockers.length} (${blockers.map(r=>r.task+': '+r.blockers).join('; ')||'none'})
-- At risk: ${atRisk.length}
-- Due this week (7 days): ${soon.filter(r=>{const d=dDiff(r.deadline);return d!==null&&d<=7;}).length}
-- Due next week (8-14 days): ${soon.filter(r=>{const d=dDiff(r.deadline);return d!==null&&d>7&&d<=14;}).length}
-- Stale 7d+: ${stale.length}
+SIGNALS: blockers: ${blockers.map(r=>r.task+' ('+r.blockers+')').join('; ')||'none'} | at risk: ${atRisk.length} | due this week: ${soon7.length} | due next week: ${soon14.length} | stale 7d+: ${stale.length}
 
-Write a MONDAY MORNING WEEK-SETTER summary. Format:
-
-WEEKLY OPS SUMMARY — w/c ${today}
+MONDAY MORNING WEEK-SETTER — w/c ${today}
 
 THIS WEEK'S HEADLINE
-[2-3 sentences — what kind of week is it? High pressure? Execution week? Decision week?]
+[2-3 sentences — what kind of week is this?]
 
-MUST-CLOSE THIS WEEK
-[Items due within 7 days that need to land — owner, deadline, next step]
+MUST LAND THIS WEEK
+[due ≤7 days — owner, deadline, next step]
 
-BLOCKERS TO CLEAR MONDAY
-[Active blockers — what's stuck, what's it holding up, who needs to act]
+BLOCKERS TO CLEAR TODAY
+[what's stuck, what it's holding up, who acts]
 
 AT RISK — NEEDS INTERVENTION
-[At-risk items with specific action needed]
+[specific action per item]
 
 LONG LEAD ITEMS NOT MOVING
-[Stale items on long-horizon tasks — the ones that slip quietly]
+[stale items on important long-horizon work]
 
 LOOKING AHEAD (NEXT 2 WEEKS)
-[Items due 8-14 days out that need setup now]
+[items due 8-14 days that need setup now]
 
 THIS WEEK'S TOP 5 PRIORITIES
-[Ranked list — specific, owned, actionable]
+[ranked, specific, owned]
 
-Write for a founder who reads it at 8am Monday. Make it the thing that sets up the whole week.`;
+Written for a founder reading at 8am Monday.`;
 }
 
 async function generateSummary() {
@@ -426,24 +519,17 @@ async function generateSummary() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinning">↻</span> Generating...';
   el.textContent = 'Writing summary...';
-
   const today = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  const prompt = buildPrompt(summaryType, today);
-
   try {
     const res = await fetch('/api/summarise', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1500, messages: [{ role: 'user', content: prompt }] })
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1500, messages:[{role:'user',content:buildPrompt(summaryType,today)}]})
     });
     const data = await res.json();
     lastSummary = data.content?.find(b=>b.type==='text')?.text || 'Could not generate.';
     el.textContent = lastSummary;
     document.getElementById('slack-btn').disabled = false;
-  } catch(e) {
-    el.textContent = 'Error generating summary.';
-  }
-
+  } catch(e) { el.textContent = 'Error generating summary.'; }
   btn.disabled = false;
   btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Regenerate';
 }
@@ -453,35 +539,23 @@ async function sendToSlack() {
   const btn = document.getElementById('slack-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinning">↻</span> Sending...';
-
   const today = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  const isMonday = summaryType === 'weekly';
-  const title = isMonday ? '📅 LightWork — Weekly Ops Summary' : '☀️ LightWork — Daily Briefing';
-
+  const title = summaryType==='weekly' ? '📅 LightWork — Weekly Ops Summary' : '☀️ LightWork — Daily Briefing';
   const payload = {
-    blocks: [
-      { type:'header', text:{type:'plain_text',text:title,emoji:true} },
-      { type:'context', elements:[{type:'mrkdwn',text:`${today} · ${allData.length} commitments · *${allData.filter(r=>r.status==='At Risk').length} at risk* · ${allData.filter(r=>r.blockers&&r.blockers.trim()!=='').length} blockers · ${allData.filter(r=>r.status==='On Track').length} on track`}] },
-      { type:'divider' },
-      { type:'section', text:{type:'mrkdwn',text:lastSummary.length>2900?lastSummary.slice(0,2900)+'...':lastSummary} },
-      { type:'divider' },
-      { type:'context', elements:[{type:'mrkdwn',text:`LightWork Ops Agent · <https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit|View tracker>`}] }
+    blocks:[
+      {type:'header',text:{type:'plain_text',text:title,emoji:true}},
+      {type:'context',elements:[{type:'mrkdwn',text:`${today} · ${allData.length} commitments · *${allData.filter(r=>r.status==='At Risk').length} at risk* · ${allData.filter(r=>r.blockers&&r.blockers.trim()!=='').length} blockers`}]},
+      {type:'divider'},
+      {type:'section',text:{type:'mrkdwn',text:lastSummary.length>2900?lastSummary.slice(0,2900)+'...':lastSummary}},
+      {type:'divider'},
+      {type:'context',elements:[{type:'mrkdwn',text:`LightWork Ops Agent · <https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit|View tracker>`}]}
     ]
   };
-
   try {
-    const res = await fetch('/api/summarise', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({type:'slack', ...payload})
-    });
+    const res = await fetch('/api/summarise', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'slack',...payload})});
     const data = await res.json();
-    if (data.ok) showToast('✓ Sent to Slack', 'ok');
-    else showToast('Slack rejected the message', 'err');
-  } catch(e) {
-    showToast('Failed to send to Slack', 'err');
-  }
-
+    if (data.ok) showToast('✓ Sent to Slack','ok'); else showToast('Slack rejected the message','err');
+  } catch(e) { showToast('Failed to send to Slack','err'); }
   btn.disabled = false;
   btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 15a2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2h2v2zm1 0a2 2 0 0 1 2-2 2 2 0 0 1 2 2v5a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-5zm2-9a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2v2H9zm0 1a2 2 0 0 1 2 2 2 2 0 0 1-2 2H4a2 2 0 0 1-2-2 2 2 0 0 1 2-2h5zm9 2a2 2 0 0 1 2-2 2 2 0 0 1 2 2 2 2 0 0 1-2 2h-2V9zm-1 0a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2 2 2 0 0 1 2 2v5zm-2 9a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2v-2h2zm0-1a2 2 0 0 1-2-2 2 2 0 0 1 2-2h5a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-5z" fill="currentColor"/></svg> Send to Slack';
 }
