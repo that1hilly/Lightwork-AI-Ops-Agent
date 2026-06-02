@@ -323,7 +323,8 @@ async function loadSheet() {
     if (!res.ok) throw new Error(`${res.status}`);
     const json = await res.json();
     const rows = json.values || [];
-    allData = rows.filter(r=>r[0]&&r[0]!=='Function'&&r[1]!=='Task / Deliverable').slice(1).map(r=>({
+    const headers = rows[0] || [];
+    allData = rows.slice(1).filter(r=>r[0]&&r[0].trim()!==''&&r[0]!=='Function').map(r=>({
       fn: r[0]||'', task: r[1]||'', owner: r[2]||'',
       deadline: r[3]||'', status: r[4]||'', lastUpdate: r[5]||'',
       nextSteps: r[6]||'', blockers: r[7]||'', notes: r[8]||''
@@ -340,7 +341,7 @@ function updateMetrics() {
   document.getElementById('m-on').textContent = allData.filter(r=>r.status==='On Track').length;
   document.getElementById('m-risk').textContent = allData.filter(r=>r.status==='At Risk').length;
   document.getElementById('m-missed').textContent = allData.filter(r=>r.status==='Missed').length;
-  document.getElementById('m-blockers').textContent = allData.filter(r=>r.blockers&&r.blockers.trim()!=='').length;
+  document.getElementById('m-blockers').textContent = allData.filter(r=>r.blockers&&r.blockers.trim()!==''&&r.status!=='Complete').length;
   document.getElementById('m-stale').textContent = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete';}).length;
 }
 
