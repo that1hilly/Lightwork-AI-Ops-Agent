@@ -299,8 +299,9 @@ let summaryType = 'daily';
 function pDate(s) {
   if (!s) return null;
   const mo = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-  const m = s.match(/(\d+)\s+(\w+)\s+(\d+)/);
-  return m ? new Date(+m[3], mo[m[2]], +m[1]) : new Date(s);
+  const m = s.match(/(\d+)[\s\-]+(\w+)[\s\-]+(\d+)/);
+  if (m && mo[m[2]]!==undefined) return new Date(+m[3] < 100 ? 2000 + +m[3] : +m[3], mo[m[2]], +m[1]);
+  return new Date(s);
 }
 function dDiff(s) { const d=pDate(s); return !d||isNaN(d)?null:Math.round((d-new Date())/86400000); }
 function dSince(s) { const d=pDate(s); return !d||isNaN(d)?null:Math.round((new Date()-d)/86400000); }
@@ -322,7 +323,7 @@ async function loadSheet() {
     if (!res.ok) throw new Error(`${res.status}`);
     const json = await res.json();
     const rows = json.values || [];
-    allData = rows.slice(1).filter(r=>r[0]).map(r=>({
+    allData = rows.slice(1).filter(r=>r[0]&&r[0]!=='Function').map(r=>({
       fn: r[0]||'', task: r[1]||'', owner: r[2]||'',
       deadline: r[3]||'', status: r[4]||'', lastUpdate: r[5]||'',
       notes: r[6]||'', nextSteps: r[7]||'', blockers: r[8]||''
