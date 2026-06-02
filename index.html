@@ -172,18 +172,26 @@
     <div class="metric"><div class="metric-label">Total</div><div class="metric-value" id="m-total">—</div></div>
     <div class="metric"><div class="metric-label">On track (30d)</div><div class="metric-value good" id="m-on">—</div></div>
     <div class="metric"><div class="metric-label">At risk</div><div class="metric-value risk" id="m-risk">—</div></div>
-    <div class="metric"><div class="metric-label">Critical</div><div class="metric-value danger" id="m-missed">—</div></div>
+    <div class="metric"><div class="metric-label">Overdue</div><div class="metric-value danger" id="m-overdue">—</div></div>
     <div class="metric"><div class="metric-label">Blockers</div><div class="metric-value danger" id="m-blockers">—</div></div>
     <div class="metric"><div class="metric-label">Stale 7d+</div><div class="metric-value risk" id="m-stale">—</div></div>
   </div>
 
   <!-- RAG STATUS -->
-  <div class="rag-grid" id="rag-grid">
+  <div class="rag-grid" id="rag-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;">
     <div class="rag-panel">
       <div class="rag-header red">
         <div class="rag-dot red"></div>
-        <span class="rag-title red">Critical</span>
-        <span class="rag-count red" id="rag-red-count">0</span>
+        <span class="rag-title red">Overdue</span>
+        <span class="rag-count red" id="rag-overdue-count">0</span>
+      </div>
+      <div class="rag-body" id="rag-overdue"></div>
+    </div>
+    <div class="rag-panel">
+      <div class="rag-header red" style="background:#FFF0E0;border-color:#E8A060;">
+        <div class="rag-dot" style="background:#C05000;"></div>
+        <span class="rag-title" style="color:#C05000;">Critical</span>
+        <span class="rag-count" style="color:#C05000;" id="rag-red-count">0</span>
       </div>
       <div class="rag-body" id="rag-red"></div>
     </div>
@@ -229,7 +237,7 @@
       </div>
       <div class="filters">
         <button class="filter-btn active" onclick="setFilter('All',this)">All</button>
-        <button class="filter-btn" onclick="setFilter('Missed',this)">Missed</button>
+        <button class="filter-btn" onclick="setFilter('Overdue',this)">Overdue</button>
         <button class="filter-btn" onclick="setFilter('At Risk',this)">At risk</button>
         <button class="filter-btn" onclick="setFilter('Blocked',this)">Blocked</button>
         <button class="filter-btn" onclick="setFilter('On Track',this)">On track</button>
@@ -346,75 +354,74 @@ async function loadSheet() {
 }
 
 function updateMetrics() {
-  const redIds = new Set();
-  allData.forEach(r => {
-    const overdue = (()=>{ const d=dDiff(r.deadline); return d!==null&&d<0; })();
-    if (r.status==='Missed'||overdue||(r.blockers&&r.blockers.trim()!=='')) redIds.add(r.task);
-  });
-  const amberCount = allData.filter(r => {
-    if (redIds.has(r.task)||r.status==='Complete') return false;
-    const stale = dSince(r.lastUpdate);
-    return r.status==='At Risk' || (stale!==null&&stale>=14);
+  const overdueCount = allData.filter(r=>{ const d=dDiff(r.deadline); return d!==null&&d<0&&r.status!=='Complete'; }).length;
+  const criticalCount = allData.filter(r=>{ const d=dDiff(r.deadline); const ov=d!==null&&d<0; return !ov&&r.status!=='Complete'&&r.blockers&&r.blockers.trim()!==''; }).length;
+  const amberCount = allData.filter(r=>{
+    const d=dDiff(r.deadline); const ov=d!==null&&d<0;
+    if (ov||r.status==='Complete'||(r.blockers&&r.blockers.trim()!=='')) return false;
+    const stale=dSince(r.lastUpdate);
+    return r.status==='At Risk'||(stale!==null&&stale>=14);
   }).length;
-  const greenCount = allData.filter(r => {
-    if (redIds.has(r.task)||r.status==='Complete') return false;
-    const d = dDiff(r.deadline);
-    return r.status==='On Track' && d!==null && d>=0 && d<=30;
+  const greenCount = allData.filter(r=>{
+    const d=dDiff(r.deadline); const ov=d!==null&&d<0;
+    if (ov||r.status==='Complete'||(r.blockers&&r.blockers.trim()!=='')) return false;
+    return r.status==='On Track'&&d!==null&&d>=0&&d<=30;
   }).length;
 
   document.getElementById('m-total').textContent = allData.length;
   document.getElementById('m-on').textContent = greenCount;
   document.getElementById('m-risk').textContent = amberCount;
-  document.getElementById('m-missed').textContent = redIds.size;
-  document.getElementById('m-blockers').textContent = allData.filter(r=>r.blockers&&r.blockers.trim()!==''&&r.status!=='Complete').length;
+  document.getElementById('m-overdue').textContent = overdueCount;
+  document.getElementById('m-blockers').textContent = criticalCount;
   document.getElementById('m-stale').textContent = allData.filter(r=>{const d=dSince(r.lastUpdate);return d!==null&&d>=7&&r.status!=='Complete';}).length;
 }
 
 function renderRAG() {
-  // RED: missed + active blockers
-  const redIds = new Set();
+  const isOv = r => { const d=dDiff(r.deadline); return d!==null&&d<0&&r.status!=='Complete'; };
+  const isBlk = r => r.blockers&&r.blockers.trim()!=='';
+
+  const overdueIds=new Set(), redIds=new Set(), amberIds=new Set();
+
+  const overdue = allData.filter(r => { if(!isOv(r)) return false; overdueIds.add(r.task); return true; });
   const red = allData.filter(r => {
-    if (r.status==='Complete') return false;
-    const overdue = (()=>{ const d=dDiff(r.deadline); return d!==null&&d<0; })();
-    const isRed = r.status==='Missed' || overdue || (r.blockers&&r.blockers.trim()!=='');
-    if (isRed) redIds.add(r.task);
-    return isRed;
+    if(overdueIds.has(r.task)||r.status==='Complete'||!isBlk(r)) return false;
+    redIds.add(r.task); return true;
   });
-  const amberIds = new Set();
   const amber = allData.filter(r => {
-    if (redIds.has(r.task)||r.status==='Complete') return false;
-    const stale = dSince(r.lastUpdate);
-    const isAmber = r.status==='At Risk' || (stale!==null&&stale>=14);
-    if (isAmber) amberIds.add(r.task);
-    return isAmber;
+    if(overdueIds.has(r.task)||redIds.has(r.task)||r.status==='Complete') return false;
+    const stale=dSince(r.lastUpdate);
+    const a=r.status==='At Risk'||(stale!==null&&stale>=14);
+    if(a) amberIds.add(r.task); return a;
   });
   const green = allData.filter(r => {
-    if (redIds.has(r.task)||amberIds.has(r.task)||r.status==='Complete') return false;
-    const d = dDiff(r.deadline);
-    return r.status==='On Track' && d!==null && d>=0 && d<=30;
+    if(overdueIds.has(r.task)||redIds.has(r.task)||amberIds.has(r.task)||r.status==='Complete') return false;
+    const d=dDiff(r.deadline);
+    return r.status==='On Track'&&d!==null&&d>=0&&d<=30;
   });
 
+  document.getElementById('rag-overdue-count').textContent = overdue.length;
   document.getElementById('rag-red-count').textContent = red.length;
   document.getElementById('rag-amber-count').textContent = amber.length;
   document.getElementById('rag-green-count').textContent = green.length;
 
   const renderItems = (items, elId, showBlocker) => {
     const el = document.getElementById(elId);
-    if (!items.length) { el.innerHTML = `<div class="rag-empty">none</div>`; return; }
+    if (!items.length) { el.innerHTML=`<div class="rag-empty">none</div>`; return; }
     el.innerHTML = items.map(r => {
-      const overdue = (()=>{ const d=dDiff(r.deadline); return d!==null&&d<0; })();
-      const blocker = showBlocker && r.blockers ? `<div class="rag-item-blocker">blocks: ${r.blockers}</div>` : '';
-      const ns = r.nextSteps ? `<div class="rag-item-nextstep">→ ${r.nextSteps}</div>` : '';
-      const dl = r.deadline ? `· ${dlLbl(r.deadline, r.status)}` : '';
-      const overdueTag = overdue && r.status!=='Missed' ? `<span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--red);margin-left:4px;">[overdue]</span>` : '';
+      const ovDays=(()=>{ const d=dDiff(r.deadline); return d!==null&&d<0?Math.abs(d):0; })();
+      const ovTag=ovDays>0?`<span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--red);"> [${ovDays}d overdue]</span>`:'';
+      const blocker=showBlocker&&r.blockers?`<div class="rag-item-blocker">blocks: ${r.blockers}</div>`:'';
+      const ns=r.nextSteps?`<div class="rag-item-nextstep">→ ${r.nextSteps}</div>`:'';
+      const dl=r.deadline?`· ${dlLbl(r.deadline,r.status)}`:'';
       return `<div class="rag-item">
-        <div class="rag-item-title">${r.task}${overdueTag}</div>
+        <div class="rag-item-title">${r.task}${ovTag}</div>
         <div class="rag-item-sub">${r.fn} · ${r.owner} ${dl}</div>
         ${blocker}${ns}
       </div>`;
     }).join('');
   };
 
+  renderItems(overdue, 'rag-overdue', true);
   renderItems(red, 'rag-red', true);
   renderItems(amber, 'rag-amber', false);
   renderItems(green, 'rag-green', false);
@@ -455,6 +462,11 @@ function setFilter(f, btn) {
   renderTable();
 }
 
+function isOverdueItem(r) {
+  const d = dDiff(r.deadline);
+  return d!==null && d<0 && r.status!=='Complete';
+}
+
 function setSummaryType(type, btn) {
   summaryType = type;
   document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
@@ -469,6 +481,7 @@ function setSummaryType(type, btn) {
 function renderTable() {
   const filtered = allData.filter(r => {
     if (currentFilter==='All') return true;
+    if (currentFilter==='Overdue') return isOverdueItem(r);
     if (currentFilter==='Blocked') return r.blockers&&r.blockers.trim()!=='';
     return r.fn===currentFilter||r.status===currentFilter;
   });
