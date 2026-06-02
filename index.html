@@ -307,7 +307,16 @@ function dDiff(s) { const d=pDate(s); return !d||isNaN(d)?null:Math.round((d-new
 function dSince(s) { const d=pDate(s); return !d||isNaN(d)?null:Math.round((new Date()-d)/86400000); }
 function dlCls(s,st) { if(st==='Complete') return 'dl-normal'; const d=dDiff(s); if(d===null) return 'dl-normal'; return d<0?'dl-over':d<=7?'dl-soon':'dl-normal'; }
 function dlLbl(s,st) { if(st==='Complete') return s; const d=dDiff(s); if(d===null) return s; if(d<0) return s+` (${Math.abs(d)}d over)`; if(d===0) return s+' (today)'; if(d<=7) return s+` (${d}d)`; return s; }
-function sCls(s) { return s==='On Track'?'s-on':s==='At Risk'?'s-risk':s==='Missed'?'s-missed':'s-complete'; }
+function sCls(s, deadline) {
+  const overdue = deadline && (()=>{ const d=dDiff(deadline); return d!==null&&d<0; })();
+  if (overdue) return 's-missed';
+  return s==='On Track'?'s-on':s==='At Risk'?'s-risk':s==='Missed'?'s-missed':'s-complete';
+}
+function sLabel(s, deadline) {
+  const overdue = deadline && (()=>{ const d=dDiff(deadline); return d!==null&&d<0; })();
+  if (overdue) return 'Overdue';
+  return s;
+}
 
 function showToast(msg, type) {
   const t = document.getElementById('toast');
@@ -393,11 +402,13 @@ function renderRAG() {
     const el = document.getElementById(elId);
     if (!items.length) { el.innerHTML = `<div class="rag-empty">none</div>`; return; }
     el.innerHTML = items.map(r => {
+      const overdue = (()=>{ const d=dDiff(r.deadline); return d!==null&&d<0; })();
       const blocker = showBlocker && r.blockers ? `<div class="rag-item-blocker">blocks: ${r.blockers}</div>` : '';
       const ns = r.nextSteps ? `<div class="rag-item-nextstep">→ ${r.nextSteps}</div>` : '';
       const dl = r.deadline ? `· ${dlLbl(r.deadline, r.status)}` : '';
+      const overdueTag = overdue && r.status!=='Missed' ? `<span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--red);margin-left:4px;">[overdue]</span>` : '';
       return `<div class="rag-item">
-        <div class="rag-item-title">${r.task}</div>
+        <div class="rag-item-title">${r.task}${overdueTag}</div>
         <div class="rag-item-sub">${r.fn} · ${r.owner} ${dl}</div>
         ${blocker}${ns}
       </div>`;
@@ -474,7 +485,7 @@ function renderTable() {
       <td>${ns}</td>
       <td><span class="owner-text">${r.owner}</span></td>
       <td><span class="${dlCls(r.deadline,r.status)}">${dlLbl(r.deadline,r.status)}</span></td>
-      <td><span class="status-pill ${sCls(r.status)}">${r.status}</span></td>
+      <td><span class="status-pill ${sCls(r.status, r.deadline)}">${sLabel(r.status, r.deadline)}</span></td>
     </tr>`;
   }).join('');
 }
