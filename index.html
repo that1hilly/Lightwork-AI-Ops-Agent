@@ -323,10 +323,10 @@ async function loadSheet() {
     if (!res.ok) throw new Error(`${res.status}`);
     const json = await res.json();
     const rows = json.values || [];
-    allData = rows.slice(1).filter(r=>r[0]&&r[0]!=='Function').map(r=>({
+    allData = rows.filter(r=>r[0]&&r[0]!=='Function'&&r[1]!=='Task / Deliverable').slice(1).map(r=>({
       fn: r[0]||'', task: r[1]||'', owner: r[2]||'',
       deadline: r[3]||'', status: r[4]||'', lastUpdate: r[5]||'',
-      notes: r[6]||'', nextSteps: r[7]||'', blockers: r[8]||''
+      nextSteps: r[6]||'', blockers: r[7]||'', notes: r[8]||''
     }));
     document.getElementById('sync-label').textContent = `synced ${new Date().toLocaleTimeString()} · ${allData.length} items`;
     updateMetrics(); renderRAG(); renderUpdates(); renderTable();
