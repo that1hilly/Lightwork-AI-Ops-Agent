@@ -46,7 +46,9 @@
 
   /* METRICS TILES */
   .metrics-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
-  .metric { background: var(--surface); padding: 20px 20px 18px; }
+  .metric { background: var(--surface); padding: 20px 20px 18px; cursor: pointer; transition: background 0.15s; }
+  .metric:hover { background: var(--bg); }
+  .metric.clickable:hover { background: var(--bg); }
   .metric-label { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-3); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px; line-height: 1.3; }
   .metric-value { font-size: 32px; font-weight: 300; letter-spacing: -0.03em; line-height: 1; }
   .v-green { color: var(--green); }
@@ -184,12 +186,12 @@
 
   <!-- TILES: total + 4 RAG categories + stale -->
   <div class="metrics-grid">
-    <div class="metric"><div class="metric-label">Total</div><div class="metric-value" id="m-total">—</div></div>
-    <div class="metric"><div class="metric-label">Overdue</div><div class="metric-value v-red" id="m-overdue">—</div></div>
-    <div class="metric"><div class="metric-label">Critical</div><div class="metric-value v-orange" id="m-critical">—</div></div>
-    <div class="metric"><div class="metric-label">At risk</div><div class="metric-value v-amber" id="m-atrisk">—</div></div>
-    <div class="metric"><div class="metric-label">On track</div><div class="metric-value v-green" id="m-ontrack">—</div></div>
-    <div class="metric"><div class="metric-label">Stale (no recent updates)</div><div class="metric-value v-amber" id="m-stale">—</div></div>
+    <div class="metric" onclick="filterAndScroll('All')"><div class="metric-label">Total</div><div class="metric-value" id="m-total">—</div></div>
+    <div class="metric" onclick="filterAndScroll('Overdue')"><div class="metric-label">Overdue</div><div class="metric-value v-red" id="m-overdue">—</div></div>
+    <div class="metric" onclick="filterAndScroll('Critical')"><div class="metric-label">Critical</div><div class="metric-value v-orange" id="m-critical">—</div></div>
+    <div class="metric" onclick="filterAndScroll('At Risk')"><div class="metric-label">At risk</div><div class="metric-value v-amber" id="m-atrisk">—</div></div>
+    <div class="metric" onclick="filterAndScroll('On Track')"><div class="metric-label">On track</div><div class="metric-value v-green" id="m-ontrack">—</div></div>
+    <div class="metric" style="cursor:default;" title="Stale items appear across all categories"><div class="metric-label">Stale (no recent updates)</div><div class="metric-value v-amber" id="m-stale">—</div></div>
   </div>
 
   <!-- RAG: 4 columns -->
@@ -379,6 +381,29 @@ function statusDisplay(r) {
   if (cat === 'atrisk') return { cls: 's-atrisk', label: 'At Risk' };
   if (cat === 'complete') return { cls: 's-complete', label: 'Complete' };
   return { cls: 's-ontrack', label: 'On Track' };
+}
+
+// ── FILTER AND SCROLL ─────────────────────────────────────
+function filterAndScroll(f) {
+  // Find the matching filter button and click it
+  const btns = document.querySelectorAll('.filter-btn');
+  let matched = false;
+  btns.forEach(btn => {
+    if (btn.textContent.trim() === f ||
+        (f === 'All' && btn.textContent.trim() === 'All') ||
+        (f === 'At Risk' && btn.textContent.trim() === 'At risk') ||
+        (f === 'On Track' && btn.textContent.trim() === 'On track')) {
+      btn.click();
+      matched = true;
+    }
+  });
+  if (!matched) {
+    // Fallback — set filter directly
+    currentFilter = f;
+    renderTable();
+  }
+  // Scroll to the commitments table
+  document.getElementById('tbody').closest('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ── LOAD SHEET ────────────────────────────────────────────
