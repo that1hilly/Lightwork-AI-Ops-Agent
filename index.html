@@ -156,16 +156,6 @@
   .toast.err { border-color: var(--red); color: var(--red); background: var(--red-bg); }
   @keyframes spin { to { transform: rotate(360deg); } }
   .spinning { animation: spin 0.8s linear infinite; display: inline-block; }
-  .change-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
-  .change-item:last-child { border-bottom: none; }
-  .change-tag { font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 500; padding: 2px 7px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
-  .change-tag.status { background: var(--blue-bg); color: var(--blue); }
-  .change-tag.blocker { background: var(--orange-bg); color: var(--orange); }
-  .change-tag.notes { background: var(--green-bg); color: var(--green); }
-  .change-tag.nextsteps { background: var(--amber-bg); color: var(--amber); }
-  .change-task { color: var(--text); font-weight: 400; line-height: 1.4; }
-  .change-detail { font-size: 12px; color: var(--text-2); margin-top: 2px; }
-  .no-changes { padding: 16px 20px; font-size: 12px; color: var(--text-3); font-family: 'DM Mono', monospace; }
   @media (max-width: 900px) { .rag-grid { grid-template-columns: 1fr 1fr; } .metrics-grid { grid-template-columns: repeat(3,1fr); } .main { padding: 20px 16px 48px; } .header { padding: 0 16px; } }
 </style>
 </head>
@@ -236,18 +226,6 @@
       </div>
       <div class="rag-body" id="rag-ontrack"></div>
     </div>
-  </div>
-
-  <!-- CHANGELOG -->
-  <div class="updates-feed" id="changelog-panel" style="display:none;">
-    <div class="updates-header">
-      <div class="updates-title">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Changes since last refresh
-      </div>
-      <span id="changelog-time" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text-3);"></span>
-    </div>
-    <div id="changelog-body"></div>
   </div>
 
   <!-- RECENT UPDATES -->
@@ -338,46 +316,6 @@ let currentFilter = 'All';
 let lastSummary = '';
 let summaryType = 'daily';
 
-// ── SNAPSHOT STORAGE ──────────────────────────────────────
-const SNAPSHOT_KEY = 'lw_ops_snapshots';
-
-function saveSnapshot(data) {
-  try {
-    const snapshots = loadSnapshots();
-    snapshots.push({ ts: Date.now(), data: JSON.parse(JSON.stringify(data)) });
-    // Keep last 14 days only
-    const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000;
-    const pruned = snapshots.filter(s => s.ts > cutoff);
-    localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(pruned));
-  } catch(e) { console.warn('Snapshot save failed', e); }
-}
-
-function loadSnapshots() {
-  try {
-    return JSON.parse(localStorage.getItem(SNAPSHOT_KEY) || '[]');
-  } catch(e) { return []; }
-}
-
-function get8amYesterday() {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  d.setHours(8, 0, 0, 0);
-  return d.getTime();
-}
-
-function getCompareSnapshot() {
-  const snapshots = loadSnapshots();
-  if (!snapshots.length) return null;
-  const target = get8amYesterday();
-  // Find snapshot closest to 8am yesterday
-  let best = null, bestDiff = Infinity;
-  snapshots.forEach(s => {
-    const diff = Math.abs(s.ts - target);
-    if (diff < bestDiff) { bestDiff = diff; best = s; }
-  });
-  return best;
-}
-
 // ── DATE HELPERS ──────────────────────────────────────────
 function pDate(s) {
   if (!s) return null;
@@ -443,71 +381,6 @@ function statusDisplay(r) {
   return { cls: 's-ontrack', label: 'On Track' };
 }
 
-// ── CHANGELOG ─────────────────────────────────────────────
-function renderChangelog() {
-  const panel = document.getElementById('changelog-panel');
-  const body = document.getElementById('changelog-body');
-  const timeEl = document.getElementById('changelog-time');
-
-  const snapshot = getCompareSnapshot();
-  if (!snapshot) {
-    panel.style.display = 'none';
-    return;
-  }
-
-  const prevData = snapshot.data;
-  const snapshotTime = new Date(snapshot.ts);
-  const snapshotLabel = snapshotTime.toLocaleDateString('en-GB', {weekday:'short',day:'numeric',month:'short'}) + ' at ' + snapshotTime.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
-
-  const changes = [];
-  const fields = [
-    { key: 'status',    label: 'status',      tag: 'status' },
-    { key: 'blockers',  label: 'blocker',     tag: 'blocker' },
-    { key: 'notes',     label: 'notes',       tag: 'notes' },
-    { key: 'nextSteps', label: 'next steps',  tag: 'nextsteps' },
-    { key: 'deadline',  label: 'deadline',    tag: 'status' },
-  ];
-
-  allData.forEach(r => {
-    const prev = prevData.find(p => p.task === r.task && p.fn === r.fn);
-    if (!prev) {
-      changes.push({ r, label: 'new item', tag: 'status', detail: 'Added to tracker' });
-      return;
-    }
-    fields.forEach(f => {
-      const oldVal = (prev[f.key]||'').trim();
-      const newVal = (r[f.key]||'').trim();
-      if (oldVal !== newVal) {
-        changes.push({ r, label: f.label, tag: f.tag, detail: oldVal ? `${oldVal} → ${newVal}` : newVal });
-      }
-    });
-  });
-
-  prevData.forEach(p => {
-    if (!allData.find(r => r.task === p.task && r.fn === p.fn)) {
-      changes.push({ r: p, label: 'removed', tag: 'status', detail: 'Item removed from tracker' });
-    }
-  });
-
-  panel.style.display = 'block';
-  timeEl.textContent = `vs snapshot: ${snapshotLabel}`;
-
-  if (!changes.length) {
-    body.innerHTML = '<div class="no-changes">No changes since 8am yesterday.</div>';
-    return;
-  }
-
-  body.innerHTML = changes.map(c => `
-    <div class="change-item">
-      <span class="change-tag ${c.tag}">${c.label}</span>
-      <div>
-        <div class="change-task">${c.r.task}</div>
-        <div class="change-detail">${c.r.fn} · ${c.r.owner} · ${c.detail}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
 // ── LOAD SHEET ────────────────────────────────────────────
 async function loadSheet() {
   document.getElementById('sync-label').textContent = 'syncing...';
@@ -532,8 +405,6 @@ async function loadSheet() {
         notes:      r[8]||''
       }));
     document.getElementById('sync-label').textContent = `synced ${new Date().toLocaleTimeString()} · ${allData.length} items`;
-    renderChangelog();
-    saveSnapshot(allData);
     updateMetrics();
     renderRAG();
     renderUpdates();
